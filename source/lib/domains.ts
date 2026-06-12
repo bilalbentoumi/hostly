@@ -50,7 +50,7 @@ async function reconcile(domains: Domain[]): Promise<SyncResult> {
   return { elevated, caddyError };
 }
 
-/** Register a new domain and sync it everywhere. */
+/** Register a new domain, persisting it and adding it to /etc/hosts only. */
 export async function add(
   host: string,
   port: number,
@@ -69,7 +69,10 @@ export async function add(
     createdAt: new Date().toISOString(),
   });
   saveRegistry(registry);
-  return reconcile(registry.domains);
+  // Only update /etc/hosts for now — Caddy is left untouched until an
+  // explicit sync.
+  const { elevated } = await hosts.write(registry.domains);
+  return { elevated };
 }
 
 /** Remove a domain and sync the change everywhere. */

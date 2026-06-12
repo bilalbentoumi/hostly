@@ -11,6 +11,9 @@ export const SERVER_ID = 'le-server';
 /** Caddy's internal CA id used for non-public (.local) certificates. */
 export const CA_ID = 'local';
 
+/** Listener addresses our managed server claims. */
+const LISTEN = [':443', ':80'];
+
 export type CaInfo = {
   id: string;
   name: string;
@@ -33,7 +36,13 @@ function routeId(host: string): string {
 }
 
 async function admin(path: string, init?: RequestInit): Promise<Response> {
-  return fetch(`${ADMIN}${path}`, init);
+  // Caddy's admin API rejects requests whose Origin isn't allowed. Node's
+  // fetch sends an empty Origin header, which Caddy refuses with a 403, so we
+  // pin it to the admin endpoint itself.
+  return fetch(`${ADMIN}${path}`, {
+    ...init,
+    headers: { Origin: ADMIN, ...init?.headers },
+  });
 }
 
 /** Returns true when Caddy's admin API is reachable. */
@@ -97,9 +106,23 @@ export async function apply(domains: Domain[]): Promise<void> {
   const http = apps['http'] as AnyConfig;
   http['servers'] ??= {};
   const servers = http['servers'] as AnyConfig;
+
+  // Free our listener addresses from any other server, since Caddy refuses to
+  // load two servers claiming the same port. Servers left with no listeners
+  // are dropped entirely.
+  for (const [name, server] of Object.entries(servers)) {
+    if (name === 'local-edge') continue;
+    const srv = server as AnyConfig;
+    const listen: string[] = Array.isArray(srv['listen']) ? srv['listen'] : [];
+    srv['listen'] = listen.filter((addr) => !LISTEN.includes(addr));
+    if ((srv['listen'] as string[]).length === 0) {
+      delete servers[name];
+    }
+  }
+
   servers['local-edge'] = {
     '@id': SERVER_ID,
-    listen: [':443', ':80'],
+    listen: [...LISTEN],
     routes: domains.map(buildRoute),
   };
 
