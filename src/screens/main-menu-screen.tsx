@@ -3,7 +3,8 @@ import SelectInput from 'ink-select-input';
 
 import { Header } from '../components/header.js';
 import KeyHints from '../components/key-hints.js';
-import type { MenuChoice, Screen } from '../types/index.js';
+import { useAppStore } from '../stores/app-store.js';
+import type { MenuChoice } from '../types/index.js';
 
 const items: MenuChoice[] = [
   { label: '🌐  Domains', value: 'domains' },
@@ -11,19 +12,16 @@ const items: MenuChoice[] = [
   { label: '⏻   Quit', value: 'quit' },
 ];
 
-export type MainMenuScreenProps = {
-  readonly onSelect: (screen: Screen) => void;
-};
-
-export default function MainMenuScreen({ onSelect }: MainMenuScreenProps) {
+export default function MainMenuScreen() {
   const { exit } = useApp();
+  const { setScreen } = useAppStore();
 
   const handleSelect = (item: MenuChoice) => {
     if (item.value === 'quit') {
       exit();
       return;
     }
-    onSelect(item.value as Screen);
+    setScreen(item.value);
   };
 
   return (

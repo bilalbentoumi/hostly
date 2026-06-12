@@ -8,6 +8,7 @@ import SaveDomainForm from '../components/save-domain-form.js';
 import StatusLine from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
 import * as domains from '../lib/domains.js';
+import { useAppStore } from '../stores/app-store.js';
 import type {
   DomainStatus,
   DomainsMode,
@@ -28,11 +29,8 @@ function syncNote(result: SyncResult, action: string): string {
   return parts.join(' ');
 }
 
-export type DomainsScreenProps = {
-  readonly onBack: () => void;
-};
-
-export default function DomainsScreen({ onBack }: DomainsScreenProps) {
+export default function DomainsScreen() {
+  const { setScreen } = useAppStore();
   const runExclusive = useExclusive();
 
   const [mode, setMode] = useState<DomainsMode>('list');
@@ -54,7 +52,7 @@ export default function DomainsScreen({ onBack }: DomainsScreenProps) {
   useInput(
     (input, key) => {
       if (key.escape) {
-        onBack();
+        setScreen('menu');
         return;
       }
 

@@ -8,6 +8,7 @@ import StatusLine from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
 import * as caddy from '../lib/caddy.js';
 import * as domains from '../lib/domains.js';
+import { useAppStore } from '../stores/app-store.js';
 import type { ProxyAction, Route } from '../types/index.js';
 
 function routeHost(route: Route): string {
@@ -18,12 +19,10 @@ function routeUpstream(route: Route): string {
   return route.handle?.[0]?.upstreams?.[0]?.dial ?? '?';
 }
 
-export type ProxyScreenProps = {
-  readonly onBack: () => void;
-};
-
-export default function ProxyScreen({ onBack }: ProxyScreenProps) {
+export default function ProxyScreen() {
+  const { setScreen } = useAppStore();
   const runExclusive = useExclusive();
+
   const [reachable, setReachable] = useState<boolean>();
   const [routes, setRoutes] = useState<Route[]>([]);
   const [busy, setBusy] = useState(false);
@@ -44,7 +43,7 @@ export default function ProxyScreen({ onBack }: ProxyScreenProps) {
   useInput(
     (_input, key) => {
       if (key.escape) {
-        onBack();
+        setScreen('menu');
       }
     },
     { isActive: !busy },

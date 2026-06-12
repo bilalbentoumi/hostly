@@ -1,23 +1,19 @@
-import { useState } from 'react';
-
 import DomainsScreen from './screens/domains-screen.js';
 import MainMenuScreen from './screens/main-menu-screen.js';
 import ProxyScreen from './screens/proxy-screen.js';
-import type { Screen } from './types/index.js';
+import { useAppStore } from './stores/app-store.js';
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('menu');
-  const back = () => setScreen('menu');
-
+  const { screen } = useAppStore();
   switch (screen) {
     case 'domains': {
-      return <DomainsScreen onBack={back} />;
+      return <DomainsScreen />;
     }
     case 'proxy': {
-      return <ProxyScreen onBack={back} />;
+      return <ProxyScreen />;
     }
     default: {
-      return <MainMenuScreen onSelect={setScreen} />;
+      return <MainMenuScreen />;
     }
   }
 }
