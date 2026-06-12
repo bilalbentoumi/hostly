@@ -2,7 +2,7 @@ import { execa } from 'execa';
 
 import type { Domain } from './config.js';
 
-export const ADMIN = 'http://localhost:2019';
+export const CADDY_API_BASE_URL = 'http://localhost:2019';
 
 export const SERVER_ID = 'le-server';
 
@@ -31,9 +31,9 @@ function routeId(host: string): string {
 }
 
 async function admin(path: string, init?: RequestInit): Promise<Response> {
-  return fetch(`${ADMIN}${path}`, {
+  return fetch(`${CADDY_API_BASE_URL}${path}`, {
     ...init,
-    headers: { Origin: ADMIN, ...init?.headers },
+    headers: { Origin: CADDY_API_BASE_URL, ...init?.headers },
   });
 }
 

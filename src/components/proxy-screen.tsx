@@ -6,6 +6,7 @@ import { useExclusive } from '../hooks/use-exclusive.js';
 import type { Route } from '../lib/caddy.js';
 import * as caddy from '../lib/caddy.js';
 import * as domains from '../lib/domains.js';
+import { Header } from './header.js';
 import KeyHints from './key-hints.js';
 import StatusLine from './status-line.js';
 
@@ -93,13 +94,17 @@ export default function ProxyScreen({ onBack }: Props) {
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">
-          Proxy & Caddy
-        </Text>
+        <Header
+          subContent={
+            <Text bold color="cyan">
+              Proxy & Caddy
+            </Text>
+          }
+        />
       </Box>
 
       <Box marginBottom={1}>
-        <Text>Admin API ({caddy.ADMIN}): </Text>
+        <Text>Admin API ({caddy.CADDY_API_BASE_URL}): </Text>
         {reachable === undefined ? (
           <Text dimColor>checking…</Text>
         ) : reachable ? (
@@ -140,12 +145,14 @@ export default function ProxyScreen({ onBack }: Props) {
         />
       </Box>
       {!busy ? (
-        <KeyHints
-          hints={[
-            { key: '↵', label: 'select' },
-            { key: 'esc', label: 'back' },
-          ]}
-        />
+        <Box marginTop={1}>
+          <KeyHints
+            hints={[
+              { key: '↵', label: 'select' },
+              { key: 'esc', label: 'back' },
+            ]}
+          />
+        </Box>
       ) : null}
     </Box>
   );

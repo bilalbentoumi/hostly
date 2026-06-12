@@ -266,14 +266,16 @@ export default function DomainsScreen({ onBack }: Props) {
         />
       </Box>
       {!busy && mode === 'list' ? (
-        <KeyHints
-          hints={[
-            { key: '↵', label: 'select to edit/delete' },
-            { key: 'r', label: 'refresh' },
-            { key: 'esc', label: 'back' },
-            { key: '', label: '✓ synced ⚠ drift' },
-          ]}
-        />
+        <Box marginTop={1}>
+          <KeyHints
+            hints={[
+              { key: '↵', label: 'select to edit/delete' },
+              { key: 'r', label: 'refresh' },
+              { key: 'esc', label: 'back' },
+              { key: '', label: '✓ synced ⚠ drift' },
+            ]}
+          />
+        </Box>
       ) : null}
     </Box>
   );

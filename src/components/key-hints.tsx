@@ -1,4 +1,4 @@
-import { Box, Text } from 'ink';
+import { Text } from 'ink';
 
 type Props = {
   readonly hints: { key: string; label: string }[];
@@ -6,10 +6,8 @@ type Props = {
 
 export default function KeyHints({ hints }: Props) {
   return (
-    <Box marginTop={1}>
-      <Text dimColor>
-        {hints.map((hint) => `${hint.key} ${hint.label}`).join(' | ')}
-      </Text>
-    </Box>
+    <Text dimColor>
+      {hints.map((hint) => `${hint.key} ${hint.label}`).join(' | ')}
+    </Text>
   );
 }

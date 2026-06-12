@@ -76,12 +76,14 @@ export default function SaveDomainForm({
           <Text color="red">✗ {error}</Text>
         </Box>
       ) : null}
-      <KeyHints
-        hints={[
-          { key: '↵', label: 'next/confirm' },
-          { key: 'esc', label: 'cancel' },
-        ]}
-      />
+      <Box marginTop={1}>
+        <KeyHints
+          hints={[
+            { key: '↵', label: 'next/confirm' },
+            { key: 'esc', label: 'cancel' },
+          ]}
+        />
+      </Box>
     </Box>
   );
 }
