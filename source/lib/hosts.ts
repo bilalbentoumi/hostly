@@ -6,8 +6,8 @@ import { join } from 'node:path';
 import type { Domain } from './config.js';
 
 const HOSTS_PATH = '/etc/hosts';
-const START = '# >>> local-edge >>>';
-const END = '# <<< local-edge <<<';
+const START = '# LocalEdge Start';
+const END = '# LocalEdge End';
 const LOOPBACK = '127.0.0.1';
 
 function readFile(): string {
@@ -58,7 +58,7 @@ function buildContent(current: string, domains: Domain[]): string {
 
   const block = [
     START,
-    ...domains.map((d) => `${LOOPBACK} ${d.host}`),
+    ...domains.map((d) => `${LOOPBACK}\t${d.host}`),
     END,
     '',
   ].join('\n');
