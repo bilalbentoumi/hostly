@@ -8,7 +8,6 @@ type Props = {
   readonly info?: string;
 };
 
-/** A single status line: spinner while busy, otherwise an error or info note. */
 export default function StatusLine({ busy, busyLabel, error, info }: Props) {
   if (busy) {
     return (

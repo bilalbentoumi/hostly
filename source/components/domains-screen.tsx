@@ -4,10 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { DomainStatus, SyncResult } from '../lib/domains.js';
 import * as domains from '../lib/domains.js';
-import AddDomainForm from './AddDomainForm.js';
+import AddDomainForm from './add-domain-form.js';
 import { Header } from './header.js';
-import StatusLine from './StatusLine.js';
-import { useExclusive } from './useExclusive.js';
+import StatusLine from './status-line.js';
+import { useExclusive } from '../hooks/use-exclusive.js';
 
 type Props = {
   readonly onBack: () => void;

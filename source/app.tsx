@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import DomainsScreen from './components/DomainsScreen.js';
-import MainMenu, { type Screen } from './components/MainMenu.js';
-import ProxyScreen from './components/ProxyScreen.js';
+import DomainsScreen from './components/domains-screen.js';
+import MainMenu, { type Screen } from './components/main-menu.js';
+import ProxyScreen from './components/proxy-screen.js';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('menu');
