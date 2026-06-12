@@ -2,16 +2,12 @@ import { execa } from 'execa';
 
 import type { Domain } from './config.js';
 
-/** Caddy's local admin API. */
 export const ADMIN = 'http://localhost:2019';
 
-/** Name of the dedicated HTTP server local-edge owns inside Caddy's config. */
 export const SERVER_ID = 'le-server';
 
-/** Caddy's internal CA id used for non-public (.local) certificates. */
 export const CA_ID = 'local';
 
-/** Listener addresses our managed server claims. */
 const LISTEN = [':443', ':80'];
 
 export type CaInfo = {
@@ -28,7 +24,6 @@ export type Route = {
   terminal?: boolean;
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 type AnyConfig = Record<string, any>;
 
 function routeId(host: string): string {
@@ -36,16 +31,12 @@ function routeId(host: string): string {
 }
 
 async function admin(path: string, init?: RequestInit): Promise<Response> {
-  // Caddy's admin API rejects requests whose Origin isn't allowed. Node's
-  // fetch sends an empty Origin header, which Caddy refuses with a 403, so we
-  // pin it to the admin endpoint itself.
   return fetch(`${ADMIN}${path}`, {
     ...init,
     headers: { Origin: ADMIN, ...init?.headers },
   });
 }
 
-/** Returns true when Caddy's admin API is reachable. */
 export async function ping(): Promise<boolean> {
   try {
     const res = await admin('/config/');
@@ -55,17 +46,14 @@ export async function ping(): Promise<boolean> {
   }
 }
 
-/** Start Caddy in the background (it exposes the admin API on :2019). */
 export async function start(): Promise<void> {
   await execa('caddy', ['start']);
 }
 
-/** Stop the running Caddy process. */
 export async function stop(): Promise<void> {
   await execa('caddy', ['stop']);
 }
 
-/** Fetch the full active config, or an empty object if none is loaded. */
 async function getConfig(): Promise<AnyConfig> {
   const res = await admin('/config/');
   if (!res.ok) {
@@ -90,26 +78,17 @@ function buildRoute(domain: Domain): Route {
   };
 }
 
-/**
- * Reconcile Caddy with the given domains: ensure the dedicated `local-edge`
- * server, its routes, and an internal-CA TLS policy scoped to our hosts —
- * without disturbing any other server or policy the user has configured.
- */
 export async function apply(domains: Domain[]): Promise<void> {
   const config: AnyConfig = await getConfig();
 
   config['apps'] ??= {};
   const apps = config['apps'] as AnyConfig;
 
-  // HTTP server with our routes.
   apps['http'] ??= {};
   const http = apps['http'] as AnyConfig;
   http['servers'] ??= {};
   const servers = http['servers'] as AnyConfig;
 
-  // Free our listener addresses from any other server, since Caddy refuses to
-  // load two servers claiming the same port. Servers left with no listeners
-  // are dropped entirely.
   for (const [name, server] of Object.entries(servers)) {
     if (name === 'local-edge') continue;
     const srv = server as AnyConfig;
@@ -126,7 +105,6 @@ export async function apply(domains: Domain[]): Promise<void> {
     routes: domains.map(buildRoute),
   };
 
-  // TLS automation policy forcing the internal issuer for our hosts only.
   apps['tls'] ??= {};
   const tls = apps['tls'] as AnyConfig;
   tls['automation'] ??= {};
@@ -158,7 +136,6 @@ export async function apply(domains: Domain[]): Promise<void> {
   }
 }
 
-/** Read the routes currently configured on our managed server. */
 export async function listRoutes(): Promise<Route[]> {
   try {
     const res = await admin(`/id/${SERVER_ID}`);
@@ -173,7 +150,6 @@ export async function listRoutes(): Promise<Route[]> {
   }
 }
 
-/** Fetch info about Caddy's internal certificate authority. */
 export async function getCa(): Promise<CaInfo | undefined> {
   try {
     const res = await admin(`/pki/ca/${CA_ID}`);

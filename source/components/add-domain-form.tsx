@@ -7,7 +7,6 @@ type Props = {
   readonly onCancel: () => void;
 };
 
-/** Two-field form (host, then port) for registering a new domain. */
 export default function AddDomainForm({ onSubmit, onCancel }: Props) {
   const [field, setField] = useState<'host' | 'port'>('host');
   const [host, setHost] = useState('');

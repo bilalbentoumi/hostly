@@ -18,7 +18,6 @@ function readFile(): string {
   }
 }
 
-/** Strip the local-edge managed block (and its surrounding blank lines). */
 function stripBlock(content: string): string {
   const lines = content.split('\n');
   const result: string[] = [];
@@ -45,7 +44,6 @@ function stripBlock(content: string): string {
     .replace(/\n+$/, '\n');
 }
 
-/** Build the full /etc/hosts content with our block reflecting `domains`. */
 function buildContent(current: string, domains: Domain[]): string {
   let base = stripBlock(current);
   if (!base.endsWith('\n')) {
@@ -66,7 +64,6 @@ function buildContent(current: string, domains: Domain[]): string {
   return `${base}\n${block}`;
 }
 
-/** Hosts currently present in our managed block. */
 export function readManagedHosts(): string[] {
   const lines = readFile().split('\n');
   const hosts: string[] = [];
@@ -92,11 +89,6 @@ export function readManagedHosts(): string[] {
   return hosts;
 }
 
-/**
- * Rewrite /etc/hosts so the managed block matches `domains`. Falls back to a
- * `sudo cp` (with an interactive password prompt) when the file is not
- * directly writable. Returns whether elevation was required.
- */
 export async function write(domains: Domain[]): Promise<{ elevated: boolean }> {
   const current = readFile();
   const next = buildContent(current, domains);
