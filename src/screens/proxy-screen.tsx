@@ -6,8 +6,8 @@ import { Header } from '../components/header.js';
 import KeyHints from '../components/key-hints.js';
 import StatusLine from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
-import * as caddy from '../lib/caddy.js';
-import * as domains from '../lib/domains.js';
+import * as caddy from '../libs/caddy.js';
+import * as domains from '../libs/domains.js';
 import { useAppStore } from '../stores/app-store.js';
 import type { ProxyAction, Route } from '../types/index.js';
 

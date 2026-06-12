@@ -7,7 +7,7 @@ import KeyHints from '../components/key-hints.js';
 import SaveDomainForm from '../components/save-domain-form.js';
 import StatusLine from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
-import * as domains from '../lib/domains.js';
+import * as domains from '../libs/domains.js';
 import { useAppStore } from '../stores/app-store.js';
 import type {
   DomainStatus,
