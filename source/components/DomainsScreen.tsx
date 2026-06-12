@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { DomainStatus, SyncResult } from '../lib/domains.js';
 import * as domains from '../lib/domains.js';
 import AddDomainForm from './AddDomainForm.js';
+import { Header } from './header.js';
 import StatusLine from './StatusLine.js';
 import { useExclusive } from './useExclusive.js';
 
@@ -31,9 +32,9 @@ function syncNote(result: SyncResult, action: string): string {
   return parts.join(' ');
 }
 
-/** List / add / remove domains. */
 export default function DomainsScreen({ onBack }: Props) {
   const runExclusive = useExclusive();
+
   const [mode, setMode] = useState<Mode>('list');
   const [rows, setRows] = useState<DomainStatus[]>([]);
   const [target, setTarget] = useState<string>();
@@ -150,10 +151,19 @@ export default function DomainsScreen({ onBack }: Props) {
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">
-          Domains
-        </Text>
-        <Text dimColor> — {rows.length} registered</Text>
+        <Header
+          subContent={
+            <Box>
+              <Text bold color="cyan">
+                Domains
+              </Text>
+              <Text bold color="gray">
+                {' '}
+                — {rows.length} registered
+              </Text>
+            </Box>
+          }
+        />
       </Box>
 
       {mode === 'remove' && target ? (
@@ -176,7 +186,7 @@ export default function DomainsScreen({ onBack }: Props) {
       {!busy && mode === 'list' ? (
         <Box marginTop={1}>
           <Text dimColor>
-            ↵ select to remove · r refresh · esc back · ✓ synced ⚠ drift
+            ↵ select to remove | r refresh | esc back | ✓ synced ⚠ drift
           </Text>
         </Box>
       ) : null}
