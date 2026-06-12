@@ -16,7 +16,6 @@ export type SyncResult = {
 const HOST_PATTERN =
   /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
 
-/** Validate a host/port pair, returning an error message or undefined. */
 export function validate(
   host: string,
   port: number,
@@ -37,7 +36,6 @@ export function validate(
   return undefined;
 }
 
-/** Push the current registry to /etc/hosts and Caddy, capturing Caddy errors. */
 async function reconcile(domains: Domain[]): Promise<SyncResult> {
   const { elevated } = await hosts.write(domains);
   let caddyError: string | undefined;
@@ -50,7 +48,6 @@ async function reconcile(domains: Domain[]): Promise<SyncResult> {
   return { elevated, caddyError };
 }
 
-/** Register a new domain, persisting it and adding it to /etc/hosts only. */
 export async function add(
   host: string,
   port: number,
@@ -68,14 +65,14 @@ export async function add(
     https,
     createdAt: new Date().toISOString(),
   });
+
   saveRegistry(registry);
-  // Only update /etc/hosts for now — Caddy is left untouched until an
-  // explicit sync.
+
   const { elevated } = await hosts.write(registry.domains);
+
   return { elevated };
 }
 
-/** Remove a domain and sync the change everywhere. */
 export async function remove(host: string): Promise<SyncResult> {
   const registry = loadRegistry();
   registry.domains = registry.domains.filter((d) => d.host !== host);
@@ -83,12 +80,10 @@ export async function remove(host: string): Promise<SyncResult> {
   return reconcile(registry.domains);
 }
 
-/** Re-push the entire registry (idempotent repair). */
 export async function syncAll(): Promise<SyncResult> {
   return reconcile(loadRegistry().domains);
 }
 
-/** Domains decorated with live hosts-file and Caddy presence. */
 export async function list(): Promise<DomainStatus[]> {
   const { domains } = loadRegistry();
   const managed = new Set(hosts.readManagedHosts());
