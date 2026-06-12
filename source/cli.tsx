@@ -1,29 +1,25 @@
 #!/usr/bin/env node
-import React from 'react';
-import {render} from 'ink';
+import { render } from 'ink';
 import meow from 'meow';
 import App from './app.js';
 
-const cli = meow(
-	`
+meow(
+  `
 	Usage
 	  $ local-edge
 
-	Options
-		--name  Your name
+	Launches the interactive local domain manager.
 
-	Examples
-	  $ local-edge --name=Jane
-	  Hello, Jane
+	Manage local dev domains (e.g. myapp.local): register domains, drive the
+	Caddy reverse proxy via its admin API, keep /etc/hosts in sync, and inspect
+	local SSL certificates from Caddy's internal CA.
+
+	Requirements
+	  - Caddy installed and on PATH (https://caddyserver.com)
 `,
-	{
-		importMeta: import.meta,
-		flags: {
-			name: {
-				type: 'string',
-			},
-		},
-	},
+  {
+    importMeta: import.meta,
+  },
 );
 
-render(<App name={cli.flags.name} />);
+render(<App />);

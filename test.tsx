@@ -1,17 +1,28 @@
-import React from 'react';
-import chalk from 'chalk';
 import test from 'ava';
-import {render} from 'ink-testing-library';
-import App from './source/app.js';
+import {validate} from './source/lib/domains.js';
 
-test('greet unknown user', t => {
-	const {lastFrame} = render(<App name={undefined} />);
-
-	t.is(lastFrame(), `Hello, ${chalk.green('Stranger')}`);
+test('validate accepts a well-formed local domain', t => {
+	t.is(validate('myapp.local', 3000, []), undefined);
 });
 
-test('greet user with a name', t => {
-	const {lastFrame} = render(<App name="Jane" />);
+test('validate rejects a host without a dot', t => {
+	t.truthy(validate('myapp', 3000, []));
+});
 
-	t.is(lastFrame(), `Hello, ${chalk.green('Jane')}`);
+test('validate rejects an out-of-range port', t => {
+	t.truthy(validate('myapp.local', 70_000, []));
+});
+
+test('validate rejects a duplicate host', t => {
+	const existing = [
+		{host: 'myapp.local', port: 3000, https: true, createdAt: ''},
+	];
+	t.truthy(validate('myapp.local', 4000, existing));
+});
+
+test('main menu renders the title and options', t => {
+	const {lastFrame} = render(<MainMenu onSelect={() => undefined} />);
+	const frame = lastFrame() ?? '';
+	t.true(frame.includes('local-edge'));
+	t.true(frame.includes('Domains'));
 });
