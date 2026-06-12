@@ -1,25 +1,24 @@
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import { useState } from 'react';
+import KeyHints from './key-hints.js';
 
 type Props = {
   readonly onSubmit: (host: string, port: number) => void;
   readonly onCancel: () => void;
   readonly title?: string;
-  readonly initialHost?: string;
-  readonly initialPort?: string;
+  readonly initialData?: { host: string; port: number };
 };
 
-export default function AddDomainForm({
+export default function SaveDomainForm({
   onSubmit,
   onCancel,
   title = 'Add domain',
-  initialHost = '',
-  initialPort = '',
+  initialData,
 }: Props) {
   const [field, setField] = useState<'host' | 'port'>('host');
-  const [host, setHost] = useState(initialHost);
-  const [port, setPort] = useState(initialPort);
+  const [host, setHost] = useState(initialData?.host ?? '');
+  const [port, setPort] = useState(initialData ? String(initialData.port) : '');
   const [error, setError] = useState<string>();
 
   useInput((_input, key) => {
@@ -77,9 +76,12 @@ export default function AddDomainForm({
           <Text color="red">✗ {error}</Text>
         </Box>
       ) : null}
-      <Box marginTop={1}>
-        <Text dimColor>↵ next/confirm · esc cancel</Text>
-      </Box>
+      <KeyHints
+        hints={[
+          { key: '↵', label: 'next/confirm' },
+          { key: 'esc', label: 'cancel' },
+        ]}
+      />
     </Box>
   );
 }

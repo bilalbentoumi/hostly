@@ -5,19 +5,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { useExclusive } from '../hooks/use-exclusive.js';
 import type { DomainStatus, SyncResult } from '../lib/domains.js';
 import * as domains from '../lib/domains.js';
-import AddDomainForm from './add-domain-form.js';
 import { Header } from './header.js';
+import KeyHints from './key-hints.js';
+import SaveDomainForm from './save-domain-form.js';
 import StatusLine from './status-line.js';
 
 type Props = {
   readonly onBack: () => void;
 };
 
-type Mode = 'list' | 'add' | 'edit' | 'actions' | 'remove';
+type Mode = 'list' | 'add' | 'actions' | 'edit' | 'remove';
 
 type ListItem = { label: string; value: string };
-
-const ADD = '__add__';
 
 function syncNote(result: SyncResult, action: string): string {
   const parts = [action];
@@ -92,7 +91,7 @@ export default function DomainsScreen({ onBack }: Props) {
   const handleSelect = (item: ListItem) => {
     setError(undefined);
     setInfo(undefined);
-    if (item.value === ADD) {
+    if (item.value === 'add') {
       setMode('add');
       return;
     }
@@ -180,7 +179,7 @@ export default function DomainsScreen({ onBack }: Props) {
 
   if (mode === 'add') {
     return (
-      <AddDomainForm
+      <SaveDomainForm
         onSubmit={(host, port) => void doAdd(host, port)}
         onCancel={() => setMode('list')}
       />
@@ -191,10 +190,9 @@ export default function DomainsScreen({ onBack }: Props) {
 
   if (mode === 'edit' && targetRow) {
     return (
-      <AddDomainForm
+      <SaveDomainForm
         title="Edit domain"
-        initialHost={targetRow.host}
-        initialPort={String(targetRow.port)}
+        initialData={{ host: targetRow.host, port: targetRow.port }}
         onSubmit={(host, port) =>
           void doEdit(targetRow.host, host, port, targetRow.https)
         }
@@ -210,7 +208,7 @@ export default function DomainsScreen({ onBack }: Props) {
   ];
 
   const items: ListItem[] = [
-    { label: '＋ Add domain', value: ADD },
+    { label: '＋ Add domain', value: 'add' },
     ...rows.map((row) => {
       const glyph = row.synced ? '✓' : '⚠';
       const scheme = row.https ? 'https' : 'http';
@@ -268,11 +266,14 @@ export default function DomainsScreen({ onBack }: Props) {
         />
       </Box>
       {!busy && mode === 'list' ? (
-        <Box marginTop={1}>
-          <Text dimColor>
-            ↵ select to edit/delete | r refresh | esc back | ✓ synced ⚠ drift
-          </Text>
-        </Box>
+        <KeyHints
+          hints={[
+            { key: '↵', label: 'select to edit/delete' },
+            { key: 'r', label: 'refresh' },
+            { key: 'esc', label: 'back' },
+            { key: '', label: '✓ synced ⚠ drift' },
+          ]}
+        />
       ) : null}
     </Box>
   );

@@ -1,6 +1,7 @@
-import { Box, Text, useApp } from 'ink';
+import { Box, useApp } from 'ink';
 import SelectInput from 'ink-select-input';
 import { Header } from './header.js';
+import KeyHints from './key-hints.js';
 
 export type Screen = 'menu' | 'domains' | 'proxy';
 
@@ -33,9 +34,14 @@ export default function MainMenu({ onSelect }: Props) {
         <Header />
       </Box>
       <SelectInput items={items} onSelect={handleSelect} />
-      <Box marginTop={1}>
-        <Text dimColor>↑↓ navigate | ↵ select | esc back | ctrl+c quit</Text>
-      </Box>
+      <KeyHints
+        hints={[
+          { key: '↑↓', label: 'navigate' },
+          { key: '↵', label: 'select' },
+          { key: 'esc', label: 'back' },
+          { key: 'ctrl+c', label: 'quit' },
+        ]}
+      />
     </Box>
   );
 }

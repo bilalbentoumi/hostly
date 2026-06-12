@@ -6,6 +6,7 @@ import { useExclusive } from '../hooks/use-exclusive.js';
 import type { Route } from '../lib/caddy.js';
 import * as caddy from '../lib/caddy.js';
 import * as domains from '../lib/domains.js';
+import KeyHints from './key-hints.js';
 import StatusLine from './status-line.js';
 
 type Props = {
@@ -139,9 +140,12 @@ export default function ProxyScreen({ onBack }: Props) {
         />
       </Box>
       {!busy ? (
-        <Box marginTop={1}>
-          <Text dimColor>↵ select · esc back</Text>
-        </Box>
+        <KeyHints
+          hints={[
+            { key: '↵', label: 'select' },
+            { key: 'esc', label: 'back' },
+          ]}
+        />
       ) : null}
     </Box>
   );
