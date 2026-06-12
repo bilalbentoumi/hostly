@@ -1,11 +1,8 @@
 import { Box, Text } from 'ink';
-import { ReactNode } from 'react';
 
-type Props = {
-  readonly subContent?: ReactNode;
-};
+import type { HeaderProps } from '../types/index.js';
 
-export function Header({ subContent }: Props) {
+export function Header({ subContent }: HeaderProps) {
   const logo = `
 ██╗      ██████╗  ██████╗ █████╗ ██╗     ███████╗██████╗  ██████╗ ███████╗
 ██║     ██╔═══██╗██╔════╝██╔══██╗██║     ██╔════╝██╔══██╗██╔════╝ ██╔════╝

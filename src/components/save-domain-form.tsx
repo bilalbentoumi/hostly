@@ -1,21 +1,15 @@
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import { useState } from 'react';
+import type { SaveDomainFormProps } from '../types/index.js';
 import KeyHints from './key-hints.js';
-
-type Props = {
-  readonly onSubmit: (host: string, port: number) => void;
-  readonly onCancel: () => void;
-  readonly title?: string;
-  readonly initialData?: { host: string; port: number };
-};
 
 export default function SaveDomainForm({
   onSubmit,
   onCancel,
   title = 'Add domain',
   initialData,
-}: Props) {
+}: SaveDomainFormProps) {
   const [field, setField] = useState<'host' | 'port'>('host');
   const [host, setHost] = useState(initialData?.host ?? '');
   const [port, setPort] = useState(initialData ? String(initialData.port) : '');

@@ -1,6 +1,6 @@
 import { execa } from 'execa';
 
-import type { Domain } from './config.js';
+import type { AnyConfig, CaInfo, Domain, Route } from '../types/index.js';
 
 export const CADDY_API_BASE_URL = 'http://localhost:2019';
 
@@ -9,22 +9,6 @@ export const SERVER_ID = 'le-server';
 export const CA_ID = 'local';
 
 const LISTEN = [':443', ':80'];
-
-export type CaInfo = {
-  id: string;
-  name: string;
-  root_common_name?: string;
-  root_certificate?: string;
-};
-
-export type Route = {
-  '@id'?: string;
-  match?: Array<{ host?: string[] }>;
-  handle?: Array<{ handler: string; upstreams?: Array<{ dial: string }> }>;
-  terminal?: boolean;
-};
-
-type AnyConfig = Record<string, any>;
 
 function routeId(host: string): string {
   return `le-${host}`;

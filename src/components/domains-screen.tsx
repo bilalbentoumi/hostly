@@ -3,20 +3,17 @@ import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useExclusive } from '../hooks/use-exclusive.js';
-import type { DomainStatus, SyncResult } from '../lib/domains.js';
 import * as domains from '../lib/domains.js';
+import type {
+  DomainStatus,
+  DomainsMode,
+  ListItem,
+  SyncResult,
+} from '../types/index.js';
 import { Header } from './header.js';
 import KeyHints from './key-hints.js';
 import SaveDomainForm from './save-domain-form.js';
 import StatusLine from './status-line.js';
-
-type Props = {
-  readonly onBack: () => void;
-};
-
-type Mode = 'list' | 'add' | 'actions' | 'edit' | 'remove';
-
-type ListItem = { label: string; value: string };
 
 function syncNote(result: SyncResult, action: string): string {
   const parts = [action];
@@ -31,10 +28,14 @@ function syncNote(result: SyncResult, action: string): string {
   return parts.join(' ');
 }
 
-export default function DomainsScreen({ onBack }: Props) {
+export type DomainsScreenProps = {
+  readonly onBack: () => void;
+};
+
+export default function DomainsScreen({ onBack }: DomainsScreenProps) {
   const runExclusive = useExclusive();
 
-  const [mode, setMode] = useState<Mode>('list');
+  const [mode, setMode] = useState<DomainsMode>('list');
   const [rows, setRows] = useState<DomainStatus[]>([]);
   const [target, setTarget] = useState<string>();
   const [busy, setBusy] = useState(false);

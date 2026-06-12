@@ -1,14 +1,14 @@
 import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
 
-type Props = {
-  readonly busy?: boolean;
-  readonly busyLabel?: string;
-  readonly error?: string;
-  readonly info?: string;
-};
+import type { StatusLineProps } from '../types/index.js';
 
-export default function StatusLine({ busy, busyLabel, error, info }: Props) {
+export default function StatusLine({
+  busy,
+  busyLabel,
+  error,
+  info,
+}: StatusLineProps) {
   if (busy) {
     return (
       <Box>

@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { Domain } from './config.js';
+import type { Domain } from '../types/index.js';
 
 const HOSTS_PATH = '/etc/hosts';
 const START = '# LocalEdge Start';

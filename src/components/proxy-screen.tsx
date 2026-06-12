@@ -3,18 +3,12 @@ import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useExclusive } from '../hooks/use-exclusive.js';
-import type { Route } from '../lib/caddy.js';
 import * as caddy from '../lib/caddy.js';
 import * as domains from '../lib/domains.js';
+import type { ProxyAction, Route } from '../types/index.js';
 import { Header } from './header.js';
 import KeyHints from './key-hints.js';
 import StatusLine from './status-line.js';
-
-type Props = {
-  readonly onBack: () => void;
-};
-
-type Action = 'start' | 'stop' | 'sync';
 
 function routeHost(route: Route): string {
   return route.match?.[0]?.host?.[0] ?? '(unknown)';
@@ -24,8 +18,11 @@ function routeUpstream(route: Route): string {
   return route.handle?.[0]?.upstreams?.[0]?.dial ?? '?';
 }
 
-/** Caddy status, lifecycle controls, and the live route list. */
-export default function ProxyScreen({ onBack }: Props) {
+export type ProxyScreenProps = {
+  readonly onBack: () => void;
+};
+
+export default function ProxyScreen({ onBack }: ProxyScreenProps) {
   const runExclusive = useExclusive();
   const [reachable, setReachable] = useState<boolean>();
   const [routes, setRoutes] = useState<Route[]>([]);
@@ -53,7 +50,7 @@ export default function ProxyScreen({ onBack }: Props) {
     { isActive: !busy },
   );
 
-  const run = async (action: Action) => {
+  const run = async (action: ProxyAction) => {
     setBusy(true);
     setError(undefined);
     setInfo(undefined);

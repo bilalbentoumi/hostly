@@ -2,16 +2,7 @@ import envPaths from 'env-paths';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-export type Domain = {
-  host: string;
-  port: number;
-  https: boolean;
-  createdAt: string;
-};
-
-export type Registry = {
-  domains: Domain[];
-};
+import type { Registry } from '../types/index.js';
 
 const paths = envPaths('local-edge', { suffix: '' });
 

@@ -1,10 +1,8 @@
 import { Text } from 'ink';
 
-type Props = {
-  readonly hints: { key: string; label: string }[];
-};
+import type { KeyHintsProps } from '../types/index.js';
 
-export default function KeyHints({ hints }: Props) {
+export default function KeyHints({ hints }: KeyHintsProps) {
   return (
     <Text dimColor>
       {hints.map((hint) => `${hint.key} ${hint.label}`).join(' | ')}

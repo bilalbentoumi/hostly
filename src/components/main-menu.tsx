@@ -1,27 +1,20 @@
 import { Box, Text, useApp } from 'ink';
 import SelectInput from 'ink-select-input';
 
+import type { MainMenuProps, MenuChoice } from '../types/index.js';
 import { Header } from './header.js';
 import KeyHints from './key-hints.js';
 
-export type Screen = 'menu' | 'domains' | 'proxy';
-
-type Choice = { label: string; value: Screen | 'quit' };
-
-const items: Choice[] = [
+const items: MenuChoice[] = [
   { label: '🌐  Domains', value: 'domains' },
   { label: '🚦  Proxy & Caddy', value: 'proxy' },
   { label: '⏻   Quit', value: 'quit' },
 ];
 
-type Props = {
-  readonly onSelect: (screen: Screen) => void;
-};
-
-export default function MainMenu({ onSelect }: Props) {
+export default function MainMenu({ onSelect }: MainMenuProps) {
   const { exit } = useApp();
 
-  const handleSelect = (item: Choice) => {
+  const handleSelect = (item: MenuChoice) => {
     if (item.value === 'quit') {
       exit();
       return;

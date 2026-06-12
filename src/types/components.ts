@@ -1,0 +1,37 @@
+import type { ReactNode } from 'react';
+
+export type Screen = 'menu' | 'domains' | 'proxy';
+
+export type MenuChoice = { label: string; value: Screen | 'quit' };
+
+export type MainMenuProps = {
+  readonly onSelect: (screen: Screen) => void;
+};
+
+export type ProxyAction = 'start' | 'stop' | 'sync';
+
+export type DomainsMode = 'list' | 'add' | 'actions' | 'edit' | 'remove';
+
+export type ListItem = { label: string; value: string };
+
+export type SaveDomainFormProps = {
+  readonly onSubmit: (host: string, port: number) => void;
+  readonly onCancel: () => void;
+  readonly title?: string;
+  readonly initialData?: { host: string; port: number };
+};
+
+export type KeyHintsProps = {
+  readonly hints: { key: string; label: string }[];
+};
+
+export type HeaderProps = {
+  readonly subContent?: ReactNode;
+};
+
+export type StatusLineProps = {
+  readonly busy?: boolean;
+  readonly busyLabel?: string;
+  readonly error?: string;
+  readonly info?: string;
+};

@@ -1,17 +1,7 @@
+import type { Domain, DomainStatus, SyncResult } from '../types/index.js';
 import * as caddy from './caddy.js';
-import { loadRegistry, saveRegistry, type Domain } from './config.js';
+import { loadRegistry, saveRegistry } from './config.js';
 import * as hosts from './hosts.js';
-
-export type DomainStatus = Domain & {
-  inHosts: boolean;
-  inCaddy: boolean;
-  synced: boolean;
-};
-
-export type SyncResult = {
-  elevated: boolean;
-  caddyError?: string;
-};
 
 const HOST_PATTERN =
   /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
