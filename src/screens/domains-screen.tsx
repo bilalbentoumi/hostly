@@ -2,6 +2,10 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
+import { Header } from '../components/header.js';
+import KeyHints from '../components/key-hints.js';
+import SaveDomainForm from '../components/save-domain-form.js';
+import StatusLine from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
 import * as domains from '../lib/domains.js';
 import type {
@@ -10,10 +14,6 @@ import type {
   ListItem,
   SyncResult,
 } from '../types/index.js';
-import { Header } from './header.js';
-import KeyHints from './key-hints.js';
-import SaveDomainForm from './save-domain-form.js';
-import StatusLine from './status-line.js';
 
 function syncNote(result: SyncResult, action: string): string {
   const parts = [action];

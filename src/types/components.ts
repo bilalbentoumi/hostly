@@ -4,10 +4,6 @@ export type Screen = 'menu' | 'domains' | 'proxy';
 
 export type MenuChoice = { label: string; value: Screen | 'quit' };
 
-export type MainMenuProps = {
-  readonly onSelect: (screen: Screen) => void;
-};
-
 export type ProxyAction = 'start' | 'stop' | 'sync';
 
 export type DomainsMode = 'list' | 'add' | 'actions' | 'edit' | 'remove';

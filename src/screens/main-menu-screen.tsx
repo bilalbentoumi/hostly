@@ -1,9 +1,9 @@
 import { Box, Text, useApp } from 'ink';
 import SelectInput from 'ink-select-input';
 
-import type { MainMenuProps, MenuChoice } from '../types/index.js';
-import { Header } from './header.js';
-import KeyHints from './key-hints.js';
+import { Header } from '../components/header.js';
+import KeyHints from '../components/key-hints.js';
+import type { MenuChoice, Screen } from '../types/index.js';
 
 const items: MenuChoice[] = [
   { label: '🌐  Domains', value: 'domains' },
@@ -11,7 +11,11 @@ const items: MenuChoice[] = [
   { label: '⏻   Quit', value: 'quit' },
 ];
 
-export default function MainMenu({ onSelect }: MainMenuProps) {
+export type MainMenuScreenProps = {
+  readonly onSelect: (screen: Screen) => void;
+};
+
+export default function MainMenuScreen({ onSelect }: MainMenuScreenProps) {
   const { exit } = useApp();
 
   const handleSelect = (item: MenuChoice) => {
@@ -19,7 +23,7 @@ export default function MainMenu({ onSelect }: MainMenuProps) {
       exit();
       return;
     }
-    onSelect(item.value);
+    onSelect(item.value as Screen);
   };
 
   return (

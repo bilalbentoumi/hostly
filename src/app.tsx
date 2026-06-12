@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import DomainsScreen from './components/domains-screen.js';
-import MainMenu from './components/main-menu.js';
-import ProxyScreen from './components/proxy-screen.js';
+import DomainsScreen from './screens/domains-screen.js';
+import MainMenuScreen from './screens/main-menu-screen.js';
+import ProxyScreen from './screens/proxy-screen.js';
 import type { Screen } from './types/index.js';
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
       return <ProxyScreen onBack={back} />;
     }
     default: {
-      return <MainMenu onSelect={setScreen} />;
+      return <MainMenuScreen onSelect={setScreen} />;
     }
   }
 }
