@@ -73,6 +73,37 @@ export async function add(
   return { elevated };
 }
 
+export async function update(
+  originalHost: string,
+  host: string,
+  port: number,
+  https = true,
+): Promise<SyncResult> {
+  const registry = loadRegistry();
+  const index = registry.domains.findIndex((d) => d.host === originalHost);
+  if (index === -1) {
+    throw new Error(`${originalHost} is not registered`);
+  }
+
+  const existing = registry.domains[index]!;
+  const others = registry.domains.filter((_, i) => i !== index);
+  const error = validate(host, port, others);
+  if (error) {
+    throw new Error(error);
+  }
+
+  registry.domains[index] = {
+    ...existing,
+    host,
+    port,
+    https,
+  };
+
+  saveRegistry(registry);
+
+  return reconcile(registry.domains);
+}
+
 export async function remove(host: string): Promise<SyncResult> {
   const registry = loadRegistry();
   registry.domains = registry.domains.filter((d) => d.host !== host);

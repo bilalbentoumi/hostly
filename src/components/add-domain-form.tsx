@@ -5,12 +5,21 @@ import { useState } from 'react';
 type Props = {
   readonly onSubmit: (host: string, port: number) => void;
   readonly onCancel: () => void;
+  readonly title?: string;
+  readonly initialHost?: string;
+  readonly initialPort?: string;
 };
 
-export default function AddDomainForm({ onSubmit, onCancel }: Props) {
+export default function AddDomainForm({
+  onSubmit,
+  onCancel,
+  title = 'Add domain',
+  initialHost = '',
+  initialPort = '',
+}: Props) {
   const [field, setField] = useState<'host' | 'port'>('host');
-  const [host, setHost] = useState('');
-  const [port, setPort] = useState('');
+  const [host, setHost] = useState(initialHost);
+  const [port, setPort] = useState(initialPort);
   const [error, setError] = useState<string>();
 
   useInput((_input, key) => {
@@ -42,7 +51,7 @@ export default function AddDomainForm({ onSubmit, onCancel }: Props) {
 
   return (
     <Box flexDirection="column">
-      <Text bold>Add domain</Text>
+      <Text bold>{title}</Text>
       <Box marginTop={1}>
         <Text>{field === 'host' ? '▸ ' : '  '}Host: </Text>
         <TextInput

@@ -2,18 +2,18 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useExclusive } from '../hooks/use-exclusive.js';
 import type { DomainStatus, SyncResult } from '../lib/domains.js';
 import * as domains from '../lib/domains.js';
 import AddDomainForm from './add-domain-form.js';
 import { Header } from './header.js';
 import StatusLine from './status-line.js';
-import { useExclusive } from '../hooks/use-exclusive.js';
 
 type Props = {
   readonly onBack: () => void;
 };
 
-type Mode = 'list' | 'add' | 'remove';
+type Mode = 'list' | 'add' | 'edit' | 'actions' | 'remove';
 
 type ListItem = { label: string; value: string };
 
@@ -79,6 +79,16 @@ export default function DomainsScreen({ onBack }: Props) {
     { isActive: mode === 'remove' && !busy },
   );
 
+  useInput(
+    (_input, key) => {
+      if (key.escape) {
+        setMode('list');
+        setTarget(undefined);
+      }
+    },
+    { isActive: mode === 'actions' && !busy },
+  );
+
   const handleSelect = (item: ListItem) => {
     setError(undefined);
     setInfo(undefined);
@@ -88,7 +98,22 @@ export default function DomainsScreen({ onBack }: Props) {
     }
 
     setTarget(item.value);
-    setMode('remove');
+    setMode('actions');
+  };
+
+  const handleAction = (item: ListItem) => {
+    if (item.value === 'edit') {
+      setMode('edit');
+      return;
+    }
+
+    if (item.value === 'delete') {
+      setMode('remove');
+      return;
+    }
+
+    setMode('list');
+    setTarget(undefined);
   };
 
   const doAdd = async (host: string, port: number) => {
@@ -100,6 +125,32 @@ export default function DomainsScreen({ onBack }: Props) {
     try {
       const result = await runExclusive(async () => domains.add(host, port));
       setInfo(syncNote(result, `Added ${host} → 127.0.0.1:${port}`));
+    } catch (error_) {
+      setError((error_ as Error).message);
+    } finally {
+      setBusy(false);
+      setBusyLabel(undefined);
+      await refresh();
+    }
+  };
+
+  const doEdit = async (
+    originalHost: string,
+    host: string,
+    port: number,
+    https: boolean,
+  ) => {
+    setMode('list');
+    setTarget(undefined);
+    setBusy(true);
+    setBusyLabel(`Updating ${originalHost}…`);
+    setError(undefined);
+    setInfo(undefined);
+    try {
+      const result = await runExclusive(async () =>
+        domains.update(originalHost, host, port, https),
+      );
+      setInfo(syncNote(result, `Updated ${host} → 127.0.0.1:${port}`));
     } catch (error_) {
       setError((error_ as Error).message);
     } finally {
@@ -136,6 +187,28 @@ export default function DomainsScreen({ onBack }: Props) {
     );
   }
 
+  const targetRow = rows.find((row) => row.host === target);
+
+  if (mode === 'edit' && targetRow) {
+    return (
+      <AddDomainForm
+        title="Edit domain"
+        initialHost={targetRow.host}
+        initialPort={String(targetRow.port)}
+        onSubmit={(host, port) =>
+          void doEdit(targetRow.host, host, port, targetRow.https)
+        }
+        onCancel={() => setMode('list')}
+      />
+    );
+  }
+
+  const actionItems: ListItem[] = [
+    { label: '✎ Edit', value: 'edit' },
+    { label: '✗ Delete', value: 'delete' },
+    { label: '↩ Cancel', value: 'cancel' },
+  ];
+
   const items: ListItem[] = [
     { label: '＋ Add domain', value: ADD },
     ...rows.map((row) => {
@@ -171,6 +244,17 @@ export default function DomainsScreen({ onBack }: Props) {
           <Text color="yellow">Remove {target}? </Text>
           <Text dimColor>(y/N)</Text>
         </Box>
+      ) : mode === 'actions' && target ? (
+        <Box flexDirection="column">
+          <Box marginBottom={1}>
+            <Text color="cyan">{target}</Text>
+          </Box>
+          <SelectInput
+            items={actionItems}
+            isFocused={!busy}
+            onSelect={handleAction}
+          />
+        </Box>
       ) : (
         <SelectInput items={items} isFocused={!busy} onSelect={handleSelect} />
       )}
@@ -186,7 +270,7 @@ export default function DomainsScreen({ onBack }: Props) {
       {!busy && mode === 'list' ? (
         <Box marginTop={1}>
           <Text dimColor>
-            ↵ select to remove | r refresh | esc back | ✓ synced ⚠ drift
+            ↵ select to edit/delete | r refresh | esc back | ✓ synced ⚠ drift
           </Text>
         </Box>
       ) : null}

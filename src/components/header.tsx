@@ -18,7 +18,13 @@ export function Header({ subContent }: Props) {
   return (
     <Box flexDirection="column">
       <Text color="cyan">{logo}</Text>
-      {subContent ? subContent : <Text bold color="gray">Local Domain Manager</Text>}
+      {subContent ? (
+        subContent
+      ) : (
+        <Text bold color="gray">
+          Local Domain Manager
+        </Text>
+      )}
     </Box>
   );
 }

@@ -2,11 +2,11 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useExclusive } from '../hooks/use-exclusive.js';
 import type { Route } from '../lib/caddy.js';
 import * as caddy from '../lib/caddy.js';
 import * as domains from '../lib/domains.js';
 import StatusLine from './status-line.js';
-import { useExclusive } from '../hooks/use-exclusive.js';
 
 type Props = {
   readonly onBack: () => void;
