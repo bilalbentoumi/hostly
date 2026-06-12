@@ -12,11 +12,9 @@ export default function App() {
     case 'domains': {
       return <DomainsScreen onBack={back} />;
     }
-
     case 'proxy': {
       return <ProxyScreen onBack={back} />;
     }
-
     default: {
       return <MainMenu onSelect={setScreen} />;
     }
