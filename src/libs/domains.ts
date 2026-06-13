@@ -1,6 +1,6 @@
 import type { Domain, DomainStatus, SyncResult } from '../types/index.js';
 import * as caddy from './caddy.js';
-import { loadRegistry, saveRegistry } from './config.js';
+import * as config from './registry.js';
 import * as hosts from './hosts.js';
 
 const HOST_PATTERN =
@@ -47,7 +47,7 @@ export async function add({
   port: number;
   https?: boolean;
 }): Promise<SyncResult> {
-  const registry = loadRegistry();
+  const registry = config.loadRegistry();
   const error = validate(host, port, registry.domains);
   if (error) {
     throw new Error(error);
@@ -60,7 +60,7 @@ export async function add({
     createdAt: new Date().toISOString(),
   });
 
-  saveRegistry(registry);
+  config.saveRegistry(registry);
 
   const { elevated } = await hosts.write(registry.domains);
 
@@ -78,7 +78,7 @@ export async function update({
   port: number;
   https: boolean;
 }): Promise<SyncResult> {
-  const registry = loadRegistry();
+  const registry = config.loadRegistry();
   const index = registry.domains.findIndex((d) => d.host === originalHost);
   if (index === -1) {
     throw new Error(`${originalHost} is not registered`);
@@ -98,24 +98,24 @@ export async function update({
     https,
   };
 
-  saveRegistry(registry);
+  config.saveRegistry(registry);
 
   return reconcile(registry.domains);
 }
 
 export async function remove(host: string): Promise<SyncResult> {
-  const registry = loadRegistry();
+  const registry = config.loadRegistry();
   registry.domains = registry.domains.filter((d) => d.host !== host);
-  saveRegistry(registry);
+  config.saveRegistry(registry);
   return reconcile(registry.domains);
 }
 
 export async function syncAll(): Promise<SyncResult> {
-  return reconcile(loadRegistry().domains);
+  return reconcile(config.loadRegistry().domains);
 }
 
 export async function list(): Promise<DomainStatus[]> {
-  const { domains } = loadRegistry();
+  const { domains } = config.loadRegistry();
   const managed = new Set(hosts.readManagedHosts());
   const routes = await caddy.listRoutes();
   const routed = new Set(

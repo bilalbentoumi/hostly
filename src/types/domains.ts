@@ -1,4 +1,4 @@
-import type { Domain } from './config.js';
+import type { Domain } from './registry.js';
 
 export type DomainStatus = Domain & {
   inHosts: boolean;
