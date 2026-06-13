@@ -61,9 +61,7 @@ export async function add({
     });
   });
 
-  const { elevated } = await hosts.write(domains);
-
-  return { elevated };
+  return reconcile(domains);
 }
 
 export async function update({
