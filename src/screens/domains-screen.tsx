@@ -121,7 +121,9 @@ export function DomainsScreen() {
     setError(undefined);
     setInfo(undefined);
     try {
-      const result = await runExclusive(async () => domains.add(host, port));
+      const result = await runExclusive(async () =>
+        domains.add({ host, port }),
+      );
       setInfo(syncNote(result, `Added ${host} → 127.0.0.1:${port}`));
     } catch (error_) {
       setError((error_ as Error).message);
@@ -146,7 +148,7 @@ export function DomainsScreen() {
     setInfo(undefined);
     try {
       const result = await runExclusive(async () =>
-        domains.update(originalHost, host, port, https),
+        domains.update({ originalHost, host, port, https }),
       );
       setInfo(syncNote(result, `Updated ${host} → 127.0.0.1:${port}`));
     } catch (error_) {

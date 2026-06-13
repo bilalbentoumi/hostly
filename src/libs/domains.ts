@@ -38,11 +38,15 @@ async function reconcile(domains: Domain[]): Promise<SyncResult> {
   return { elevated, caddyError };
 }
 
-export async function add(
-  host: string,
-  port: number,
+export async function add({
+  host,
+  port,
   https = true,
-): Promise<SyncResult> {
+}: {
+  host: string;
+  port: number;
+  https?: boolean;
+}): Promise<SyncResult> {
   const registry = loadRegistry();
   const error = validate(host, port, registry.domains);
   if (error) {
@@ -63,12 +67,17 @@ export async function add(
   return { elevated };
 }
 
-export async function update(
-  originalHost: string,
-  host: string,
-  port: number,
+export async function update({
+  originalHost,
+  host,
+  port,
   https = true,
-): Promise<SyncResult> {
+}: {
+  originalHost: string;
+  host: string;
+  port: number;
+  https: boolean;
+}): Promise<SyncResult> {
   const registry = loadRegistry();
   const index = registry.domains.findIndex((d) => d.host === originalHost);
   if (index === -1) {
