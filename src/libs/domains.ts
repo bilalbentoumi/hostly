@@ -26,18 +26,6 @@ export function validate(
   return undefined;
 }
 
-async function reconcile(domains: Domain[]): Promise<SyncResult> {
-  const { elevated } = await hosts.write(domains);
-  let caddyError: string | undefined;
-  try {
-    await caddy.apply(domains);
-  } catch (error) {
-    caddyError = (error as Error).message;
-  }
-
-  return { elevated, caddyError };
-}
-
 export async function add({
   host,
   port,
@@ -123,4 +111,16 @@ export async function list(): Promise<DomainStatus[]> {
     const inCaddy = routed.has(domain.host);
     return { ...domain, inHosts, inCaddy, synced: inHosts && inCaddy };
   });
+}
+
+async function reconcile(domains: Domain[]): Promise<SyncResult> {
+  const { elevated } = await hosts.write(domains);
+  let caddyError: string | undefined;
+  try {
+    await caddy.apply(domains);
+  } catch (error) {
+    caddyError = (error as Error).message;
+  }
+
+  return { elevated, caddyError };
 }
