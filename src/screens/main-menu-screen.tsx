@@ -7,9 +7,9 @@ import { useAppStore } from '../stores/app-store.js';
 import type { MenuChoice } from '../types/index.js';
 
 const items: MenuChoice[] = [
-  { label: '🌐  Domains', value: 'domains' },
-  { label: '🚦  Proxy & Caddy', value: 'proxy' },
-  { label: '⏻   Quit', value: 'quit' },
+  { label: 'Domains', value: 'domains' },
+  { label: 'Proxy & Caddy', value: 'proxy' },
+  { label: 'Quit', value: 'quit' },
 ];
 
 export default function MainMenuScreen() {

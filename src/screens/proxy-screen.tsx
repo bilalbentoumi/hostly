@@ -82,10 +82,10 @@ export default function ProxyScreen() {
 
   const items = reachable
     ? [
-        { label: '🔄  Sync routes from registry', value: 'sync' as const },
-        { label: '⏹   Stop Caddy', value: 'stop' as const },
+        { label: 'Sync routes from registry', value: 'sync' as const },
+        { label: 'Stop Caddy', value: 'stop' as const },
       ]
-    : [{ label: '▶   Start Caddy', value: 'start' as const }];
+    : [{ label: 'Start Caddy', value: 'start' as const }];
 
   return (
     <Box flexDirection="column">
