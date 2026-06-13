@@ -98,6 +98,10 @@ export async function syncAll(): Promise<SyncResult> {
   return reconcile(config.loadRegistry().domains);
 }
 
+export async function applyToCaddy(): Promise<void> {
+  await caddy.apply(config.loadRegistry().domains);
+}
+
 export async function list(): Promise<DomainStatus[]> {
   const { domains } = config.loadRegistry();
   const managed = new Set(hosts.readManagedHosts());
