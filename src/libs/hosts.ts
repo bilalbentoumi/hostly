@@ -1,5 +1,5 @@
 import { execa } from 'execa';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -18,28 +18,33 @@ function readFile(): string {
   }
 }
 
-function stripBlock(content: string): string {
-  const lines = content.split('\n');
-  const result: string[] = [];
+function splitManagedBlock(content: string): {
+  outside: string[];
+  managed: string[];
+} {
+  const outside: string[] = [];
+  const managed: string[] = [];
   let inside = false;
-  for (const line of lines) {
-    if (line.trim() === START) {
+
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed === START) {
       inside = true;
-      continue;
-    }
-
-    if (line.trim() === END) {
+    } else if (trimmed === END) {
       inside = false;
-      continue;
-    }
-
-    if (!inside) {
-      result.push(line);
+    } else if (inside) {
+      managed.push(line);
+    } else {
+      outside.push(line);
     }
   }
 
-  return result
-    .join('\n')
+  return { outside, managed };
+}
+
+function stripBlock(content: string): string {
+  return splitManagedBlock(content)
+    .outside.join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .replace(/\n+$/, '\n');
 }
@@ -65,28 +70,9 @@ function buildContent(current: string, domains: Domain[]): string {
 }
 
 export function readManagedHosts(): string[] {
-  const lines = readFile().split('\n');
-  const hosts: string[] = [];
-  let inside = false;
-  for (const line of lines) {
-    if (line.trim() === START) {
-      inside = true;
-      continue;
-    }
-
-    if (line.trim() === END) {
-      break;
-    }
-
-    if (inside) {
-      const host = line.trim().split(/\s+/)[1];
-      if (host) {
-        hosts.push(host);
-      }
-    }
-  }
-
-  return hosts;
+  return splitManagedBlock(readFile())
+    .managed.map((line) => line.trim().split(/\s+/)[1])
+    .filter((host): host is string => Boolean(host));
 }
 
 export async function write(domains: Domain[]): Promise<{ elevated: boolean }> {
@@ -105,7 +91,7 @@ export async function write(domains: Domain[]): Promise<{ elevated: boolean }> {
     }
   }
 
-  const temp = join(tmpdir(), 'local-edge-hosts');
+  const temp = join(mkdtempSync(join(tmpdir(), 'local-edge-')), 'hosts');
   writeFileSync(temp, next, 'utf8');
   await execa('sudo', ['cp', temp, HOSTS_PATH], { stdio: 'inherit' });
   return { elevated: true };
