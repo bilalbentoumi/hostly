@@ -5,6 +5,11 @@ export type CaInfo = {
   root_certificate?: string;
 };
 
+export type CertStatus = {
+  reachable: boolean;
+  ca?: CaInfo;
+};
+
 export type Route = {
   '@id'?: string;
   match?: Array<{ host?: string[] }>;

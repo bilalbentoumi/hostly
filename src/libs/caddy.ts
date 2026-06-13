@@ -1,6 +1,12 @@
 import { execa } from 'execa';
 
-import type { AnyConfig, CaInfo, Domain, Route } from '../types/index.js';
+import type {
+  AnyConfig,
+  CaInfo,
+  CertStatus,
+  Domain,
+  Route,
+} from '../types/index.js';
 
 export const CADDY_API_BASE_URL = 'http://localhost:2019';
 
@@ -164,4 +170,18 @@ export async function getCa(): Promise<CaInfo | undefined> {
   } catch {
     return undefined;
   }
+}
+
+export async function trust(): Promise<void> {
+  await execa('caddy', ['trust'], { stdio: 'inherit' });
+}
+
+export async function untrust(): Promise<void> {
+  await execa('caddy', ['untrust'], { stdio: 'inherit' });
+}
+
+export async function certStatus(): Promise<CertStatus> {
+  const reachable = await ping();
+  const ca = reachable ? await getCa() : undefined;
+  return { reachable, ca };
 }

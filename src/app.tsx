@@ -1,3 +1,4 @@
+import { CertificateScreen } from './screens/certificate-screen.js';
 import { DaemonScreen } from './screens/daemon-screen.js';
 import { DomainsScreen } from './screens/domains-screen.js';
 import { MainMenuScreen } from './screens/main-menu-screen.js';
@@ -12,6 +13,9 @@ export function App() {
     }
     case 'proxy': {
       return <ProxyScreen />;
+    }
+    case 'certificate': {
+      return <CertificateScreen />;
     }
     case 'daemon': {
       return <DaemonScreen />;

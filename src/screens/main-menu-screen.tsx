@@ -9,6 +9,7 @@ import type { MenuChoice } from '../types/index.js';
 const items: MenuChoice[] = [
   { label: 'Domains', value: 'domains' },
   { label: 'Proxy & Caddy', value: 'proxy' },
+  { label: 'Certificate', value: 'certificate' },
   { label: 'Daemon', value: 'daemon' },
   { label: 'Quit', value: 'quit' },
 ];
