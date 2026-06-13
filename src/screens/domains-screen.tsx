@@ -114,7 +114,7 @@ export function DomainsScreen() {
     setTarget(undefined);
   };
 
-  const doAdd = async (host: string, port: number) => {
+  const doAdd = async (host: string, port: number, https: boolean) => {
     setMode('list');
     setBusy(true);
     setBusyLabel(`Adding ${host}…`);
@@ -122,7 +122,7 @@ export function DomainsScreen() {
     setInfo(undefined);
     try {
       const result = await runExclusive(async () =>
-        domains.add({ host, port }),
+        domains.add({ host, port, https }),
       );
       setInfo(syncNote(result, `Added ${host} → 127.0.0.1:${port}`));
     } catch (error_) {
@@ -181,7 +181,7 @@ export function DomainsScreen() {
   if (mode === 'add') {
     return (
       <SaveDomainForm
-        onSubmit={(host, port) => void doAdd(host, port)}
+        onSubmit={(host, port, https) => void doAdd(host, port, https)}
         onCancel={() => setMode('list')}
       />
     );
@@ -193,9 +193,13 @@ export function DomainsScreen() {
     return (
       <SaveDomainForm
         title="Edit domain"
-        initialData={{ host: targetRow.host, port: targetRow.port }}
-        onSubmit={(host, port) =>
-          void doEdit(targetRow.host, host, port, targetRow.https)
+        initialData={{
+          host: targetRow.host,
+          port: targetRow.port,
+          https: targetRow.https,
+        }}
+        onSubmit={(host, port, https) =>
+          void doEdit(targetRow.host, host, port, https)
         }
         onCancel={() => setMode('list')}
       />

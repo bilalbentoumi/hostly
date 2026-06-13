@@ -11,10 +11,10 @@ export type DomainsMode = 'list' | 'add' | 'actions' | 'edit' | 'remove';
 export type ListItem = { label: string; value: string };
 
 export type SaveDomainFormProps = {
-  readonly onSubmit: (host: string, port: number) => void;
+  readonly onSubmit: (host: string, port: number, https: boolean) => void;
   readonly onCancel: () => void;
   readonly title?: string;
-  readonly initialData?: { host: string; port: number };
+  readonly initialData?: { host: string; port: number; https: boolean };
 };
 
 export type KeyHintsProps = {
