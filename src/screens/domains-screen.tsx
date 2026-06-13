@@ -282,6 +282,16 @@ export function DomainsScreen() {
           />
         </Box>
       ) : null}
+      {!busy && mode === 'actions' ? (
+        <Box marginTop={1}>
+          <KeyHints
+            hints={[
+              { key: '↵', label: 'select' },
+              { key: 'esc', label: 'back' },
+            ]}
+          />
+        </Box>
+      ) : null}
     </Box>
   );
 }

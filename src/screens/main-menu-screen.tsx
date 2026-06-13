@@ -42,7 +42,6 @@ export function MainMenuScreen() {
           hints={[
             { key: '↑↓', label: 'navigate' },
             { key: '↵', label: 'select' },
-            { key: 'esc', label: 'back' },
             { key: 'ctrl+c', label: 'quit' },
           ]}
         />

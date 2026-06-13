@@ -80,12 +80,9 @@ export function ProxyScreen() {
     }
   };
 
-  const items = reachable
-    ? [
-        { label: 'Sync routes from registry', value: 'sync' as const },
-        { label: 'Stop Caddy', value: 'stop' as const },
-      ]
-    : [{ label: 'Start Caddy', value: 'start' as const }];
+  const items = [
+    { label: 'Sync routes from registry', value: 'sync' as const },
+  ];
 
   return (
     <Box flexDirection="column">
