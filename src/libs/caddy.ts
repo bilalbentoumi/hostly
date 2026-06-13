@@ -30,6 +30,25 @@ export async function ping(): Promise<boolean> {
   }
 }
 
+/**
+ * Poll the admin API until it responds or the attempts run out. Used by the
+ * boot-time `sync` command, which can fire before Caddy's admin API is up.
+ */
+export async function waitReachable(
+  attempts = 30,
+  delayMs = 1000,
+): Promise<boolean> {
+  for (let i = 0; i < attempts; i++) {
+    if (await ping()) {
+      return true;
+    }
+
+    await new Promise((r) => setTimeout(r, delayMs));
+  }
+
+  return false;
+}
+
 export async function start(): Promise<void> {
   await execa('caddy', ['start']);
 }

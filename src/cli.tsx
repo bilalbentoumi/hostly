@@ -4,6 +4,7 @@ import { render } from 'ink';
 
 import meow from 'meow';
 import { App } from './app.js';
+import * as caddy from './libs/caddy.js';
 import * as domains from './libs/domains.js';
 
 const cli = meow(
@@ -27,6 +28,10 @@ const cli = meow(
 
 if (cli.input[0] === 'sync') {
   try {
+    if (!(await caddy.waitReachable())) {
+      throw new Error('Caddy admin API never became reachable');
+    }
+
     await domains.applyToCaddy();
     console.log('local-edge: applied saved domains to Caddy');
   } catch (error) {

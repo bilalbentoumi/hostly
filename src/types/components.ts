@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
 
-export type Screen = 'menu' | 'domains' | 'proxy';
+export type Screen = 'menu' | 'domains' | 'proxy' | 'daemon';
 
 export type MenuChoice = { label: string; value: Screen | 'quit' };
 
 export type ProxyAction = 'start' | 'stop' | 'sync';
+
+export type DaemonAction = 'install' | 'uninstall';
 
 export type DomainsMode = 'list' | 'add' | 'actions' | 'edit' | 'remove';
 
