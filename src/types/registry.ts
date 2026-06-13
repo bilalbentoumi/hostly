@@ -1,7 +1,9 @@
+export type DomainScheme = 'http' | 'https' | 'both';
+
 export type Domain = {
   host: string;
   port: number;
-  https: boolean;
+  scheme: DomainScheme;
   createdAt: string;
 };
 

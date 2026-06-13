@@ -12,8 +12,13 @@ export type CertStatus = {
 
 export type Route = {
   '@id'?: string;
-  match?: Array<{ host?: string[] }>;
-  handle?: Array<{ handler: string; upstreams?: Array<{ dial: string }> }>;
+  match?: Array<{ host?: string[]; protocol?: string }>;
+  handle?: Array<{
+    handler: string;
+    upstreams?: Array<{ dial: string }>;
+    status_code?: number;
+    headers?: Record<string, string[]>;
+  }>;
   terminal?: boolean;
 };
 

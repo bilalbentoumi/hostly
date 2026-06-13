@@ -1,4 +1,9 @@
-import type { Domain, DomainStatus, SyncResult } from '../types/index.js';
+import type {
+  Domain,
+  DomainScheme,
+  DomainStatus,
+  SyncResult,
+} from '../types/index.js';
 import * as caddy from './caddy.js';
 import * as hosts from './hosts.js';
 import * as config from './registry.js';
@@ -29,11 +34,11 @@ export function validate(
 export async function add({
   host,
   port,
-  https = true,
+  scheme = 'https',
 }: {
   host: string;
   port: number;
-  https?: boolean;
+  scheme?: DomainScheme;
 }): Promise<SyncResult> {
   const { domains } = config.updateRegistry((registry) => {
     const error = validate(host, port, registry.domains);
@@ -44,7 +49,7 @@ export async function add({
     registry.domains.push({
       host,
       port,
-      https,
+      scheme,
       createdAt: new Date().toISOString(),
     });
   });
@@ -56,12 +61,12 @@ export async function update({
   originalHost,
   host,
   port,
-  https = true,
+  scheme = 'https',
 }: {
   originalHost: string;
   host: string;
   port: number;
-  https: boolean;
+  scheme: DomainScheme;
 }): Promise<SyncResult> {
   const { domains } = config.updateRegistry((registry) => {
     const index = registry.domains.findIndex((d) => d.host === originalHost);
@@ -80,7 +85,7 @@ export async function update({
       ...existing,
       host,
       port,
-      https,
+      scheme,
     };
   });
 

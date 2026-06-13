@@ -3,15 +3,24 @@ import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
 import { useState } from 'react';
 
-import type { ListItem, SaveDomainFormProps } from '../types/index.js';
+import type {
+  DomainScheme,
+  ListItem,
+  SaveDomainFormProps,
+} from '../types/index.js';
 import { KeyHints } from './key-hints.js';
 
 type Field = 'host' | 'port' | 'scheme';
 
 const SCHEME_ITEMS: ListItem[] = [
-  { label: 'https', value: 'https' },
-  { label: 'http', value: 'http' },
+  { label: 'https (redirect http → https)', value: 'https' },
+  { label: 'http (no TLS)', value: 'http' },
+  { label: 'both (http + https, no redirect)', value: 'both' },
 ];
+
+function schemeLabel(scheme: DomainScheme): string {
+  return scheme === 'both' ? 'http + https' : scheme;
+}
 
 export function SaveDomainForm({
   onSubmit,
@@ -22,7 +31,9 @@ export function SaveDomainForm({
   const [field, setField] = useState<Field>('host');
   const [host, setHost] = useState(initialData?.host ?? '');
   const [port, setPort] = useState(initialData ? String(initialData.port) : '');
-  const [https, setHttps] = useState(initialData?.https ?? true);
+  const [scheme, setScheme] = useState<DomainScheme>(
+    initialData?.scheme ?? 'https',
+  );
   const [error, setError] = useState<string>();
 
   useInput((_input, key) => {
@@ -53,9 +64,9 @@ export function SaveDomainForm({
   };
 
   const submitScheme = (item: ListItem) => {
-    const useHttps = item.value === 'https';
-    setHttps(useHttps);
-    onSubmit(host.trim(), Number(port), useHttps);
+    const next = item.value as DomainScheme;
+    setScheme(next);
+    onSubmit(host.trim(), Number(port), next);
   };
 
   return (
@@ -83,15 +94,16 @@ export function SaveDomainForm({
       </Box>
       <Box>
         <Text>{field === 'scheme' ? '▸ ' : '  '}Scheme: </Text>
-        {field === 'scheme' ? null : (
-          <Text>{https ? 'https' : 'http'}</Text>
-        )}
+        {field === 'scheme' ? null : <Text>{schemeLabel(scheme)}</Text>}
       </Box>
       {field === 'scheme' ? (
         <Box marginLeft={2}>
           <SelectInput
             items={SCHEME_ITEMS}
-            initialIndex={https ? 0 : 1}
+            initialIndex={Math.max(
+              SCHEME_ITEMS.findIndex((item) => item.value === scheme),
+              0,
+            )}
             onSelect={submitScheme}
           />
         </Box>

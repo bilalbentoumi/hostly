@@ -10,6 +10,7 @@ import { useExclusive } from '../hooks/use-exclusive.js';
 import * as domains from '../libs/domains.js';
 import { useAppStore } from '../stores/app-store.js';
 import type {
+  DomainScheme,
   DomainStatus,
   DomainsMode,
   ListItem,
@@ -114,7 +115,7 @@ export function DomainsScreen() {
     setTarget(undefined);
   };
 
-  const doAdd = async (host: string, port: number, https: boolean) => {
+  const doAdd = async (host: string, port: number, scheme: DomainScheme) => {
     setMode('list');
     setBusy(true);
     setBusyLabel(`Adding ${host}…`);
@@ -122,7 +123,7 @@ export function DomainsScreen() {
     setInfo(undefined);
     try {
       const result = await runExclusive(async () =>
-        domains.add({ host, port, https }),
+        domains.add({ host, port, scheme }),
       );
       setInfo(syncNote(result, `Added ${host} → 127.0.0.1:${port}`));
     } catch (error_) {
@@ -138,7 +139,7 @@ export function DomainsScreen() {
     originalHost: string,
     host: string,
     port: number,
-    https: boolean,
+    scheme: DomainScheme,
   ) => {
     setMode('list');
     setTarget(undefined);
@@ -148,7 +149,7 @@ export function DomainsScreen() {
     setInfo(undefined);
     try {
       const result = await runExclusive(async () =>
-        domains.update({ originalHost, host, port, https }),
+        domains.update({ originalHost, host, port, scheme }),
       );
       setInfo(syncNote(result, `Updated ${host} → 127.0.0.1:${port}`));
     } catch (error_) {
@@ -181,7 +182,7 @@ export function DomainsScreen() {
   if (mode === 'add') {
     return (
       <SaveDomainForm
-        onSubmit={(host, port, https) => void doAdd(host, port, https)}
+        onSubmit={(host, port, scheme) => void doAdd(host, port, scheme)}
         onCancel={() => setMode('list')}
       />
     );
@@ -196,10 +197,10 @@ export function DomainsScreen() {
         initialData={{
           host: targetRow.host,
           port: targetRow.port,
-          https: targetRow.https,
+          scheme: targetRow.scheme,
         }}
-        onSubmit={(host, port, https) =>
-          void doEdit(targetRow.host, host, port, https)
+        onSubmit={(host, port, scheme) =>
+          void doEdit(targetRow.host, host, port, scheme)
         }
         onCancel={() => setMode('list')}
       />
@@ -216,9 +217,11 @@ export function DomainsScreen() {
     { label: '＋ Add domain', value: 'add' },
     ...rows.map((row) => {
       const glyph = row.synced ? '✓' : '⚠';
-      const scheme = row.https ? 'https' : 'http';
+      const url =
+        row.scheme === 'http' ? `http://${row.host}` : `https://${row.host}`;
+      const tag = row.scheme === 'both' ? ' (http+https)' : '';
       return {
-        label: `${glyph} ${scheme}://${row.host}  →  127.0.0.1:${row.port}`,
+        label: `${glyph} ${url}${tag}  →  127.0.0.1:${row.port}`,
         value: row.host,
       };
     }),

@@ -20,6 +20,10 @@ function routeId(host: string): string {
   return `le-${host}`;
 }
 
+function redirectRouteId(host: string): string {
+  return `le-redirect-${host}`;
+}
+
 async function admin(path: string, init?: RequestInit): Promise<Response> {
   return fetch(`${CADDY_API_BASE_URL}${path}`, {
     ...init,
@@ -36,10 +40,6 @@ export async function ping(): Promise<boolean> {
   }
 }
 
-/**
- * Poll the admin API until it responds or the attempts run out. Used by the
- * boot-time `sync` command, which can fire before Caddy's admin API is up.
- */
 export async function waitReachable(
   attempts = 30,
   delayMs = 1000,
@@ -87,6 +87,23 @@ function buildRoute(domain: Domain): Route {
   };
 }
 
+function buildRedirectRoute(host: string): Route {
+  return {
+    '@id': redirectRouteId(host),
+    match: [{ host: [host], protocol: 'http' }],
+    handle: [
+      {
+        handler: 'static_response',
+        status_code: 308,
+        headers: {
+          Location: ['https://{http.request.host}{http.request.uri}'],
+        },
+      },
+    ],
+    terminal: true,
+  };
+}
+
 export async function apply(domains: Domain[]): Promise<void> {
   const config: AnyConfig = await getConfig();
 
@@ -108,10 +125,18 @@ export async function apply(domains: Domain[]): Promise<void> {
     }
   }
 
+  const httpOnlyHosts = domains
+    .filter((d) => d.scheme === 'http')
+    .map((d) => d.host);
+  const redirectRoutes = domains
+    .filter((d) => d.scheme === 'https')
+    .map((d) => buildRedirectRoute(d.host));
+
   servers['local-edge'] = {
     '@id': SERVER_ID,
     listen: [...LISTEN],
-    routes: domains.map(buildRoute),
+    automatic_https: { disable_redirects: true, skip: httpOnlyHosts },
+    routes: [...redirectRoutes, ...domains.map(buildRoute)],
   };
 
   apps['tls'] ??= {};
@@ -122,7 +147,7 @@ export async function apply(domains: Domain[]): Promise<void> {
     ? (automation['policies'] as any[])
     : [];
   const policies = existing.filter((p) => p?.['@id'] !== 'le-tls');
-  const hosts = domains.filter((d) => d.https).map((d) => d.host);
+  const hosts = domains.filter((d) => d.scheme !== 'http').map((d) => d.host);
   if (hosts.length > 0) {
     policies.push({
       '@id': 'le-tls',
@@ -153,7 +178,10 @@ export async function listRoutes(): Promise<Route[]> {
     }
 
     const server = (await res.json()) as { routes?: Route[] };
-    return server.routes ?? [];
+
+    return (server.routes ?? []).filter((route) =>
+      route.handle?.some((h) => h.handler === 'reverse_proxy'),
+    );
   } catch {
     return [];
   }

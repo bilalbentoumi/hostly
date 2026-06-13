@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import type { DomainScheme } from './registry.js';
+
 export type Screen = 'menu' | 'domains' | 'proxy' | 'certificate' | 'daemon';
 
 export type MenuChoice = { label: string; value: Screen | 'quit' };
@@ -15,10 +17,10 @@ export type DomainsMode = 'list' | 'add' | 'actions' | 'edit' | 'remove';
 export type ListItem = { label: string; value: string };
 
 export type SaveDomainFormProps = {
-  readonly onSubmit: (host: string, port: number, https: boolean) => void;
+  readonly onSubmit: (host: string, port: number, scheme: DomainScheme) => void;
   readonly onCancel: () => void;
   readonly title?: string;
-  readonly initialData?: { host: string; port: number; https: boolean };
+  readonly initialData?: { host: string; port: number; scheme: DomainScheme };
 };
 
 export type KeyHintsProps = {
