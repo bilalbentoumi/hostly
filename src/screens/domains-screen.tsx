@@ -3,9 +3,9 @@ import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Header } from '../components/header.js';
-import KeyHints from '../components/key-hints.js';
-import SaveDomainForm from '../components/save-domain-form.js';
-import StatusLine from '../components/status-line.js';
+import { KeyHints } from '../components/key-hints.js';
+import { SaveDomainForm } from '../components/save-domain-form.js';
+import { StatusLine } from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
 import * as domains from '../libs/domains.js';
 import { useAppStore } from '../stores/app-store.js';
@@ -29,7 +29,7 @@ function syncNote(result: SyncResult, action: string): string {
   return parts.join(' ');
 }
 
-export default function DomainsScreen() {
+export function DomainsScreen() {
   const { setScreen } = useAppStore();
   const runExclusive = useExclusive();
 

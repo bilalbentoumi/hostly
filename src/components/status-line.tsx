@@ -3,12 +3,7 @@ import Spinner from 'ink-spinner';
 
 import type { StatusLineProps } from '../types/index.js';
 
-export default function StatusLine({
-  busy,
-  busyLabel,
-  error,
-  info,
-}: StatusLineProps) {
+export function StatusLine({ busy, busyLabel, error, info }: StatusLineProps) {
   if (busy) {
     return (
       <Box>

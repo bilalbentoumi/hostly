@@ -3,8 +3,8 @@ import SelectInput from 'ink-select-input';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Header } from '../components/header.js';
-import KeyHints from '../components/key-hints.js';
-import StatusLine from '../components/status-line.js';
+import { KeyHints } from '../components/key-hints.js';
+import { StatusLine } from '../components/status-line.js';
 import { useExclusive } from '../hooks/use-exclusive.js';
 import * as caddy from '../libs/caddy.js';
 import * as domains from '../libs/domains.js';
@@ -19,7 +19,7 @@ function routeUpstream(route: Route): string {
   return route.handle?.[0]?.upstreams?.[0]?.dial ?? '?';
 }
 
-export default function ProxyScreen() {
+export function ProxyScreen() {
   const { setScreen } = useAppStore();
   const runExclusive = useExclusive();
 

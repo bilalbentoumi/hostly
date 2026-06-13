@@ -1,10 +1,11 @@
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import { useState } from 'react';
-import type { SaveDomainFormProps } from '../types/index.js';
-import KeyHints from './key-hints.js';
 
-export default function SaveDomainForm({
+import type { SaveDomainFormProps } from '../types/index.js';
+import { KeyHints } from './key-hints.js';
+
+export function SaveDomainForm({
   onSubmit,
   onCancel,
   title = 'Add domain',

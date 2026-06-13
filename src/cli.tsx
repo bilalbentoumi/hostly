@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { render } from 'ink';
 import meow from 'meow';
-import App from './app.js';
+import { App } from './app.js';
 
 meow(
   `

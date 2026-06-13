@@ -2,7 +2,7 @@ import { Box, Text, useApp } from 'ink';
 import SelectInput from 'ink-select-input';
 
 import { Header } from '../components/header.js';
-import KeyHints from '../components/key-hints.js';
+import { KeyHints } from '../components/key-hints.js';
 import { useAppStore } from '../stores/app-store.js';
 import type { MenuChoice } from '../types/index.js';
 
@@ -12,7 +12,7 @@ const items: MenuChoice[] = [
   { label: 'Quit', value: 'quit' },
 ];
 
-export default function MainMenuScreen() {
+export function MainMenuScreen() {
   const { exit } = useApp();
   const { setScreen } = useAppStore();
 
