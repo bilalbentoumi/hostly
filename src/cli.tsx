@@ -1,7 +1,11 @@
 #!/usr/bin/env node
+import { execSync } from 'node:child_process';
 import { render } from 'ink';
+
 import meow from 'meow';
 import { App } from './app.js';
+
+execSync('sudo -v', { stdio: 'inherit' });
 
 meow(
   `
