@@ -8,19 +8,24 @@ const paths = envPaths('local-edge', { suffix: '' });
 
 export const registryPath = join(paths.config, 'domains.json');
 
-const emptyRegistry: Registry = { domains: [] };
-
 export function loadRegistry(): Registry {
   try {
     const raw = readFileSync(registryPath, 'utf8');
     const parsed = JSON.parse(raw) as Partial<Registry>;
     return { domains: Array.isArray(parsed.domains) ? parsed.domains : [] };
   } catch {
-    return emptyRegistry;
+    return { domains: [] };
   }
 }
 
 export function saveRegistry(registry: Registry): void {
   mkdirSync(dirname(registryPath), { recursive: true });
   writeFileSync(registryPath, JSON.stringify(registry, null, 2) + '\n', 'utf8');
+}
+
+export function updateRegistry(fn: (registry: Registry) => void): Registry {
+  const registry = loadRegistry();
+  fn(registry);
+  saveRegistry(registry);
+  return registry;
 }

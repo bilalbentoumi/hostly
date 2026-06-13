@@ -1,7 +1,7 @@
 import type { Domain, DomainStatus, SyncResult } from '../types/index.js';
 import * as caddy from './caddy.js';
-import * as config from './registry.js';
 import * as hosts from './hosts.js';
+import * as config from './registry.js';
 
 const HOST_PATTERN =
   /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
@@ -47,22 +47,21 @@ export async function add({
   port: number;
   https?: boolean;
 }): Promise<SyncResult> {
-  const registry = config.loadRegistry();
-  const error = validate(host, port, registry.domains);
-  if (error) {
-    throw new Error(error);
-  }
+  const { domains } = config.updateRegistry((registry) => {
+    const error = validate(host, port, registry.domains);
+    if (error) {
+      throw new Error(error);
+    }
 
-  registry.domains.push({
-    host,
-    port,
-    https,
-    createdAt: new Date().toISOString(),
+    registry.domains.push({
+      host,
+      port,
+      https,
+      createdAt: new Date().toISOString(),
+    });
   });
 
-  config.saveRegistry(registry);
-
-  const { elevated } = await hosts.write(registry.domains);
+  const { elevated } = await hosts.write(domains);
 
   return { elevated };
 }
@@ -78,36 +77,35 @@ export async function update({
   port: number;
   https: boolean;
 }): Promise<SyncResult> {
-  const registry = config.loadRegistry();
-  const index = registry.domains.findIndex((d) => d.host === originalHost);
-  if (index === -1) {
-    throw new Error(`${originalHost} is not registered`);
-  }
+  const { domains } = config.updateRegistry((registry) => {
+    const index = registry.domains.findIndex((d) => d.host === originalHost);
+    if (index === -1) {
+      throw new Error(`${originalHost} is not registered`);
+    }
 
-  const existing = registry.domains[index]!;
-  const others = registry.domains.filter((_, i) => i !== index);
-  const error = validate(host, port, others);
-  if (error) {
-    throw new Error(error);
-  }
+    const existing = registry.domains[index]!;
+    const others = registry.domains.filter((_, i) => i !== index);
+    const error = validate(host, port, others);
+    if (error) {
+      throw new Error(error);
+    }
 
-  registry.domains[index] = {
-    ...existing,
-    host,
-    port,
-    https,
-  };
+    registry.domains[index] = {
+      ...existing,
+      host,
+      port,
+      https,
+    };
+  });
 
-  config.saveRegistry(registry);
-
-  return reconcile(registry.domains);
+  return reconcile(domains);
 }
 
 export async function remove(host: string): Promise<SyncResult> {
-  const registry = config.loadRegistry();
-  registry.domains = registry.domains.filter((d) => d.host !== host);
-  config.saveRegistry(registry);
-  return reconcile(registry.domains);
+  const { domains } = config.updateRegistry((registry) => {
+    registry.domains = registry.domains.filter((d) => d.host !== host);
+  });
+  return reconcile(domains);
 }
 
 export async function syncAll(): Promise<SyncResult> {
