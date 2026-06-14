@@ -1,7 +1,7 @@
-import { execa } from 'execa';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { execa } from 'execa';
 
 import type { Domain } from '../types/index.js';
 

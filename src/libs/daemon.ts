@@ -1,8 +1,8 @@
-import { execa } from 'execa';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir, platform } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execa } from 'execa';
 
 const LAUNCHD_LABEL = 'dev.local-edge.sync';
 const SYSTEMD_UNIT = 'local-edge-sync.service';
