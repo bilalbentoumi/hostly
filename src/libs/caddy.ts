@@ -116,7 +116,7 @@ export async function apply(domains: Domain[]): Promise<void> {
   const servers = http['servers'] as AnyConfig;
 
   for (const [name, server] of Object.entries(servers)) {
-    if (name === 'local-edge') continue;
+    if (name === 'hostly') continue;
     const srv = server as AnyConfig;
     const listen: string[] = Array.isArray(srv['listen']) ? srv['listen'] : [];
     srv['listen'] = listen.filter((addr) => !LISTEN.includes(addr));
@@ -132,7 +132,7 @@ export async function apply(domains: Domain[]): Promise<void> {
     .filter((d) => d.scheme === 'https')
     .map((d) => buildRedirectRoute(d.host));
 
-  servers['local-edge'] = {
+  servers['hostly'] = {
     '@id': SERVER_ID,
     listen: [...LISTEN],
     automatic_https: { disable_redirects: true, skip: httpOnlyHosts },

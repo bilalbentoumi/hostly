@@ -4,8 +4,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execa } from 'execa';
 
-const LAUNCHD_LABEL = 'dev.local-edge.sync';
-const SYSTEMD_UNIT = 'local-edge-sync.service';
+const LAUNCHD_LABEL = 'dev.hostly.sync';
+const SYSTEMD_UNIT = 'hostly-sync.service';
 
 export type DaemonResult = {
   platform: NodeJS.Platform;
@@ -62,7 +62,7 @@ function buildUnit(): string {
   const execStart = [program, ...args].join(' ');
 
   return `[Unit]
-Description=local-edge sync (restore Caddy routes after a restart)
+Description=hostly sync (restore Caddy routes after a restart)
 After=network-online.target
 
 [Service]

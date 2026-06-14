@@ -23,6 +23,6 @@ test('validate rejects a duplicate host', t => {
 test('main menu renders the title and options', t => {
 	const {lastFrame} = render(<MainMenu onSelect={() => undefined} />);
 	const frame = lastFrame() ?? '';
-	t.true(frame.includes('local-edge'));
+	t.true(frame.includes('hostly'));
 	t.true(frame.includes('Domains'));
 });

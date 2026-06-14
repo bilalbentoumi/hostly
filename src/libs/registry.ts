@@ -4,7 +4,7 @@ import envPaths from 'env-paths';
 
 import type { Domain, DomainScheme, Registry } from '../types/index.js';
 
-const paths = envPaths('local-edge', { suffix: '' });
+const paths = envPaths('hostly', { suffix: '' });
 
 export const registryPath = join(paths.config, 'domains.json');
 

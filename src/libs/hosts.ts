@@ -91,7 +91,7 @@ export async function write(domains: Domain[]): Promise<{ elevated: boolean }> {
     }
   }
 
-  const temp = join(mkdtempSync(join(tmpdir(), 'local-edge-')), 'hosts');
+  const temp = join(mkdtempSync(join(tmpdir(), 'hostly-')), 'hosts');
   writeFileSync(temp, next, 'utf8');
   await execa('sudo', ['cp', temp, HOSTS_PATH], { stdio: 'inherit' });
   return { elevated: true };

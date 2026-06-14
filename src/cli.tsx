@@ -10,8 +10,8 @@ import * as domains from './libs/domains.js';
 const cli = meow(
   `
 	Usage
-	  $ local-edge          Launch the interactive local domain manager
-	  $ local-edge sync     Re-apply saved domains to Caddy, then exit
+	  $ hostly          Launch the interactive local domain manager
+	  $ hostly sync     Re-apply saved domains to Caddy, then exit
 
 	The sync command restores proxy routes after Caddy (re)starts, since
 	Caddy's admin-API config is not persisted across restarts. Run it at
@@ -33,9 +33,9 @@ if (cli.input[0] === 'sync') {
     }
 
     await domains.applyToCaddy();
-    console.log('local-edge: applied saved domains to Caddy');
+    console.log('hostly: applied saved domains to Caddy');
   } catch (error) {
-    console.error(`local-edge sync failed: ${(error as Error).message}`);
+    console.error(`hostly sync failed: ${(error as Error).message}`);
     process.exit(1);
   }
 } else {
