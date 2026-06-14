@@ -6,8 +6,8 @@ import { execa } from 'execa';
 import type { Domain } from '../types/index.js';
 
 const HOSTS_PATH = '/etc/hosts';
-const START = '# LocalEdge Start';
-const END = '# LocalEdge End';
+const START = '# Hostly Start';
+const END = '# Hostly End';
 const LOOPBACK = '127.0.0.1';
 
 function readFile(): string {
