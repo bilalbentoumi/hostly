@@ -5,7 +5,7 @@
 ## Install
 
 ```bash
-$ npm install --global hostly
+$ npm install -g hostly
 ```
 
 ## CLI

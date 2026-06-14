@@ -1,0 +1,61 @@
+# Building from Source
+
+How to build and run hostly locally.
+
+## Prerequisites
+
+- **Node.js 18+**
+- **pnpm** — the repo pins a pnpm version via `packageManager` in `package.json`
+- **[Caddy](https://caddyserver.com)** on your `PATH` (needed at runtime, not to build)
+
+## Clone & Install
+
+```bash
+git clone https://github.com/bilalbentoumi/hostly.git
+cd hostly
+pnpm install
+```
+
+## Build
+
+hostly is written in TypeScript and compiled to `dist/`. The build also makes the CLI entry executable.
+
+```bash
+pnpm build
+```
+
+This runs `tsc` and then `chmod +x dist/cli.js`. The compiled entry point is `dist/cli.js`, which is what the `bin` field in `package.json` points to.
+
+## Develop
+
+Watch and recompile on change:
+
+```bash
+pnpm dev
+```
+
+In another terminal, run the freshly built CLI:
+
+```bash
+node dist/cli.js
+```
+
+## Test & Lint
+
+```bash
+pnpm test
+```
+
+This runs [`xo`](https://github.com/xojs/xo) (lint) and [`ava`](https://github.com/avajs/ava) (tests). Tests use [`ink-testing-library`](https://github.com/vadimdemedes/ink-testing-library) to render components and assert on terminal output.
+
+## Run Locally Without Publishing
+
+Link the package globally so the `hostly` command resolves to your working copy:
+
+```bash
+pnpm build
+npm link
+hostly
+```
+
+Run `npm unlink -g hostly` to remove the link.

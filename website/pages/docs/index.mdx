@@ -1,0 +1,74 @@
+# Getting Started
+
+`hostly` is an interactive terminal app that maps custom domains like `app.local` to your local dev servers — with trusted HTTPS, a reverse proxy, and a boot daemon. No GUI, no config files to hand-edit.
+
+## Requirements
+
+- **Node.js 18+** — hostly is a Node CLI
+- **[Caddy](https://caddyserver.com)** — used as the reverse proxy and local Certificate Authority. It must be installed and available on your `PATH`.
+- **macOS or Linux** — the boot daemon supports launchd (macOS) and systemd (Linux). Domain and proxy management also work elsewhere, but daemon install does not.
+
+Check that Caddy is reachable:
+
+```bash
+caddy version
+```
+
+## Install
+
+```bash
+npm install -g hostly
+```
+
+## Launch
+
+```bash
+hostly
+```
+
+hostly asks for `sudo` up front (it caches your credentials with `sudo -v`) because editing `/etc/hosts` requires elevation. Then it opens the **main menu**:
+
+```
+  ❯ Domains
+    Proxy & Caddy
+    Certificate
+    Daemon
+    Quit
+```
+
+Navigate with the arrow keys, select with <kbd>Enter</kbd>, and quit with <kbd>Ctrl+C</kbd>.
+
+## Add Your First Domain
+
+1. Open **Domains** from the main menu
+2. Select **＋ Add domain**
+3. Enter the values when prompted:
+   - **Host** — e.g. `app.local`
+   - **Port** — the port your dev server listens on, e.g. `3000`
+   - **Scheme** — `https` (redirects http → https), `http` (no TLS), or `both`
+4. hostly writes the domain to `/etc/hosts` (via `sudo` if needed) and pushes a route to Caddy.
+
+## Trust HTTPS
+
+For `https` domains to load without browser warnings, install Caddy's local CA into your system trust store once:
+
+1. Open **Certificate** from the main menu
+2. Select **Trust local CA (install root certificate)**
+
+After this, `https://app.local` loads with a valid certificate. You may need to restart your browser the first time.
+
+## Survive Restarts
+
+Caddy does not persist its admin-API config across restarts, so routes are lost when Caddy stops. Install the boot daemon to re-apply them automatically:
+
+1. Open **Daemon** from the main menu
+2. Select **Install boot daemon**
+
+This installs a launchd agent (macOS) or systemd user unit (Linux) that runs `hostly sync` at boot. `/etc/hosts` already persists, so the daemon only restores Caddy routes.
+
+## What's Next
+
+- See everything hostly can do in [Features](/docs/features)
+- Full command reference in [Commands](/docs/commands)
+- Hitting a wall? Check [Troubleshooting](/docs/troubleshooting)
+- Want to contribute? See [Contributing](/docs/contributing)

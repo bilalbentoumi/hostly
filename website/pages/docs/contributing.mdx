@@ -1,0 +1,78 @@
+# Contributing
+
+hostly is open source (MIT) and contributions are welcome.
+
+## Prerequisites
+
+- **Node.js 18+**
+- **pnpm** — the repo pins a version via `packageManager`
+- **[Caddy](https://caddyserver.com)** on your `PATH` to exercise the proxy and certificate features
+
+## Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/bilalbentoumi/hostly.git
+cd hostly
+
+# Install dependencies
+pnpm install
+
+# Build
+pnpm build
+
+# Lint + test
+pnpm test
+```
+
+## Development
+
+```bash
+# Recompile on change
+pnpm dev
+
+# In another terminal, run the built CLI
+node dist/cli.js
+```
+
+See [Building from Source](/docs/building) for more, including `npm link` for global testing.
+
+## Project Structure
+
+```
+src/
+├── cli.tsx          # Entry point + sync command
+├── app.tsx          # Screen router
+├── stores/          # zustand store
+├── screens/         # One component per menu screen
+├── components/      # Shared UI (header, key hints, forms)
+├── hooks/           # Reusable hooks
+├── libs/            # Side effects: hosts, caddy, daemon, registry
+└── types/           # Shared types
+```
+
+## How to Contribute
+
+1. **Open an issue** describing the bug or feature
+2. **Fork and branch** from `main`
+3. **Make your changes** following the existing patterns
+4. **Run `pnpm test`** — both `xo` (lint) and `ava` (tests) must pass
+5. **Open a PR** describing what changed and why
+
+### Good first contributions
+
+- Bug fixes
+- Documentation improvements
+- Test coverage (tests use `ink-testing-library`)
+- Platform-specific fixes (especially Linux/systemd)
+
+## Code Conventions
+
+- **TypeScript, ESM** — imports use the `.js` extension at runtime
+- **Ink + React** for UI, **zustand** for state, **execa** for subprocesses
+- **Side effects live in `libs/`** — keep screens focused on rendering and input
+- **Commits:** short, descriptive, one logical change each
+
+## Questions?
+
+Open an issue on [GitHub](https://github.com/bilalbentoumi/hostly).

@@ -1,0 +1,107 @@
+# Features
+
+A detailed guide to everything hostly can do.
+
+## Custom Local Domains
+
+Create any dotted domain and point it to a local port:
+
+| Domain | Target | What it does |
+|--------|--------|-------------|
+| `app.local` | `127.0.0.1:3000` | Your React/Vue/Next.js frontend |
+| `api.local` | `127.0.0.1:8080` | Your API server |
+| `admin.local` | `127.0.0.1:4200` | An admin dashboard |
+
+Domains must match a dotted-name pattern like `myapp.local`. Ports must be integers between `1` and `65535`. The target is always `127.0.0.1` — hostly maps the host name to loopback and lets Caddy route the port.
+
+## Managed Hosts File
+
+hostly adds your domains to the system hosts file (`/etc/hosts`) inside a fenced block:
+
+```
+# Hostly Start
+127.0.0.1	app.local
+127.0.0.1	api.local
+# Hostly End
+```
+
+- Entries **outside** the managed block are never touched
+- hostly writes the file directly when it can, and falls back to `sudo cp` only when permission is denied
+- The block is rewritten from your registry on every change, so it always reflects your current domains
+
+## Trusted HTTPS
+
+hostly relies on **Caddy's internal Certificate Authority**. When you create an `https` (or `both`) domain, Caddy issues a certificate signed by its local CA.
+
+From the **Certificate** screen you can:
+
+- **Trust local CA** — runs `caddy trust` to install the root certificate into your OS trust store
+- **Untrust local CA** — runs `caddy untrust` to remove it
+
+Once trusted:
+- Chrome, Safari, and Edge show a valid certificate
+- No "Your connection is not private" warnings
+- Works for OAuth callbacks, `Secure`/`SameSite` cookies, and service workers that require HTTPS
+
+> Trust state isn't auto-detected, so re-running either action is always safe.
+
+## Reverse Proxy
+
+Each domain is routed by [Caddy](https://caddyserver.com). hostly talks to Caddy's **admin API** at `http://localhost:2019` and builds the routing config for you:
+
+- When you visit `app.local`, Caddy forwards the request to `127.0.0.1:3000`
+- HTTPS terminates at Caddy — your dev server stays plain HTTP
+- Multiple domains run simultaneously, each pointing at a different port
+
+From the **Proxy & Caddy** screen you can see whether the admin API is reachable, list the active routes, and re-sync routes from your registry.
+
+## Scheme Options
+
+Each domain has a scheme, chosen when you add or edit it:
+
+| Scheme | Behavior |
+|--------|----------|
+| `https` | Serves HTTPS and redirects `http` → `https` (308) |
+| `http` | Plain HTTP only, no TLS, no redirect |
+| `both` | Serves both HTTP and HTTPS with no redirect |
+
+## Drift Detection
+
+The Domains list marks each domain with a glyph so you can tell whether reality matches your registry:
+
+- **✓ synced** — the domain is present in both `/etc/hosts` and Caddy's live routes
+- **⚠ drift** — it's missing from one of them (for example, after Caddy restarted without a sync)
+
+Press <kbd>r</kbd> on the Domains screen to refresh the status.
+
+## Boot Daemon
+
+Caddy's admin-API config is **not persisted across restarts**, so a reboot or a `caddy stop`/`start` wipes your routes. The boot daemon fixes this by running `hostly sync` automatically.
+
+From the **Daemon** screen:
+
+- **Install boot daemon** — registers a service that runs `hostly sync` at boot
+- **Remove boot daemon** — unregisters and deletes it
+
+Under the hood:
+
+| Platform | Mechanism | Location |
+|----------|-----------|----------|
+| macOS | launchd agent (`dev.hostly.sync`) | `~/Library/LaunchAgents/dev.hostly.sync.plist` |
+| Linux | systemd user unit (`hostly-sync.service`) | `~/.config/systemd/user/hostly-sync.service` |
+
+The daemon only restores Caddy routes — it never touches `/etc/hosts`, which already persists across reboots.
+
+## The `sync` Command
+
+`hostly sync` is the non-interactive counterpart used by the daemon. It waits for the Caddy admin API to become reachable, re-applies your saved domains, and exits. You can run it manually any time Caddy has lost its routes:
+
+```bash
+hostly sync
+```
+
+See [Commands](/docs/commands) for details.
+
+## Domain Registry
+
+Your domains are stored as plain JSON in your OS config directory (resolved via [`env-paths`](https://github.com/sindresorhus/env-paths)), for example `~/.config/hostly/domains.json` on Linux. This file is the single source of truth — `/etc/hosts` and Caddy are both reconciled from it.

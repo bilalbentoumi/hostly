@@ -1,0 +1,51 @@
+# Commands
+
+hostly has two entry points: the interactive app and the `sync` subcommand.
+
+## `hostly`
+
+```bash
+hostly
+```
+
+Launches the interactive local domain manager. On start, hostly runs `sudo -v` to cache your credentials (needed to write `/etc/hosts`), then renders the main menu:
+
+| Screen | What it does |
+|--------|--------------|
+| **Domains** | List, add, edit, and delete domains. Shows sync status per domain. |
+| **Proxy & Caddy** | Check the Caddy admin API, list live routes, and re-sync routes from your registry. |
+| **Certificate** | Trust or untrust Caddy's local CA in your system trust store. |
+| **Daemon** | Install or remove the boot daemon that runs `hostly sync` at startup. |
+| **Quit** | Exit the app (same as <kbd>Ctrl+C</kbd>). |
+
+### Keyboard
+
+| Key | Action |
+|-----|--------|
+| <kbd>↑</kbd> / <kbd>↓</kbd> | Move the selection |
+| <kbd>Enter</kbd> | Select |
+| <kbd>r</kbd> | Refresh (on the Domains screen) |
+| <kbd>Esc</kbd> | Go back to the previous screen |
+| <kbd>Ctrl+C</kbd> | Quit |
+
+## `hostly sync`
+
+```bash
+hostly sync
+```
+
+Re-applies your saved domains to Caddy, then exits. It does **not** open the interactive UI and does **not** touch `/etc/hosts`.
+
+This exists because Caddy's admin-API configuration is not persisted across restarts. After Caddy restarts, its routes are gone until something re-applies them. `hostly sync`:
+
+1. Waits for the Caddy admin API (`http://localhost:2019`) to become reachable
+2. Loads your domain registry
+3. Pushes the routing and TLS config to Caddy
+
+The boot daemon (installed from the **Daemon** screen) runs this command for you at startup. You can also run it by hand whenever Caddy has lost its routes.
+
+**Exit codes:** `0` on success, `1` if Caddy never became reachable or the config could not be applied. The error is printed to stderr.
+
+## Requirements
+
+Both commands require [Caddy](https://caddyserver.com) installed and on your `PATH`. `hostly` additionally requires a TTY (it's an interactive terminal app), while `hostly sync` is safe to run headless from a service.

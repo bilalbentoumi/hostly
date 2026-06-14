@@ -1,0 +1,86 @@
+# Architecture
+
+How hostly works under the hood.
+
+## Overview
+
+```
+Ink/React TUI ──▶ libs ──▶ /etc/hosts        (sudo cp fallback)
+                    │  ──▶ Caddy admin API    (http://localhost:2019)
+                    │  ──▶ launchd / systemd  (boot daemon)
+                    └──▶ domains.json         (registry, source of truth)
+```
+
+hostly is a single Node process. It renders a terminal UI with [Ink](https://github.com/vadimdemedes/ink) (React for the CLI) and delegates all side effects to a small set of library modules. There is no background service of its own — the only persistent piece is the boot daemon, which just re-runs `hostly sync`.
+
+## Source Layout
+
+```
+src/
+├── cli.tsx                 # Entry point: meow arg parsing, sync command, render(<App/>)
+├── app.tsx                 # Screen router driven by the zustand store
+├── stores/app-store.ts     # Current screen state (zustand)
+├── screens/                # One component per menu screen
+│   ├── main-menu-screen.tsx
+│   ├── domains-screen.tsx
+│   ├── proxy-screen.tsx
+│   ├── certificate-screen.tsx
+│   └── daemon-screen.tsx
+├── components/             # Header, key hints, status line, domain form
+├── hooks/use-exclusive.ts  # Serializes side-effecting actions
+├── libs/                   # Side effects
+│   ├── domains.ts          # Reconcile registry → hosts + Caddy
+│   ├── hosts.ts            # Read/write the /etc/hosts managed block
+│   ├── caddy.ts            # Caddy admin API + caddy trust/untrust
+│   ├── daemon.ts           # launchd / systemd install + status
+│   └── registry.ts         # Load/save domains.json
+└── types/                  # Shared TypeScript types
+```
+
+## Single Source of Truth
+
+The **registry** (`domains.json`, stored in your OS config directory via [`env-paths`](https://github.com/sindresorhus/env-paths)) owns all domain state. Every mutation follows the same pattern:
+
+1. Update the registry (validate, then write JSON)
+2. **Reconcile** the full domain list to the outside world:
+   - Write the `/etc/hosts` managed block
+   - Apply the routing + TLS config to Caddy
+
+Because reconciliation always sends the **complete** list (never an incremental diff), the hosts file and Caddy can drift and then be brought back in line with a single sync.
+
+## Hosts File
+
+`libs/hosts.ts` manages a fenced block delimited by `# Hostly Start` / `# Hostly End`. It splits the file into "outside" and "managed" sections, rewrites only the managed section, and preserves everything else. It writes directly when it has permission and falls back to `sudo cp` from a temp file when it gets `EACCES`.
+
+## Caddy Integration
+
+`libs/caddy.ts` talks to Caddy's admin API at `http://localhost:2019`:
+
+- **Routing** — builds a `hostly` HTTP server listening on `:80` and `:443`, with a `reverse_proxy` route per domain to `127.0.0.1:<port>`, plus 308 redirect routes for `https` domains
+- **TLS** — adds an automation policy using the `internal` issuer (Caddy's local CA) for every `https`/`both` domain
+- **Config load** — reads the current config, merges in the hostly server, and `POST`s it to `/load`
+- **CA trust** — shells out to `caddy trust` / `caddy untrust` via [`execa`](https://github.com/sindresorhus/execa)
+- **Start/stop** — `caddy start` / `caddy stop`
+
+## Boot Daemon
+
+`libs/daemon.ts` writes a service definition that runs `hostly sync` at boot:
+
+| Platform | Mechanism | File |
+|----------|-----------|------|
+| macOS | launchd agent `dev.hostly.sync` | `~/Library/LaunchAgents/dev.hostly.sync.plist` |
+| Linux | systemd user unit `hostly-sync.service` | `~/.config/systemd/user/hostly-sync.service` |
+
+`daemonStatus()` reports two things: whether the definition file exists on disk (`installed`) and whether the service manager has it registered (`loaded`).
+
+## Tech Stack
+
+| Component | Technology | Why |
+|-----------|-----------|-----|
+| Terminal UI | Ink + React 18 | Component-based rendering in the terminal |
+| State | zustand | Minimal store for screen routing |
+| CLI parsing | meow | Tiny, ergonomic argument parsing |
+| Subprocess | execa | Reliable child-process execution (sudo, caddy, launchctl, systemctl) |
+| Config paths | env-paths | Cross-platform config directory resolution |
+| Reverse proxy / TLS | Caddy | Admin API, automatic HTTPS, internal CA |
+| Language | TypeScript (ESM) | Type safety, modern modules |

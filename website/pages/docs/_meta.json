@@ -1,0 +1,13 @@
+{
+  "index": "Getting Started",
+  "features": "Features",
+  "commands": "Commands",
+  "troubleshooting": "Troubleshooting",
+  "--- Open Source": {
+    "type": "separator",
+    "title": "Open Source"
+  },
+  "contributing": "Contributing",
+  "architecture": "Architecture",
+  "building": "Building from Source"
+}

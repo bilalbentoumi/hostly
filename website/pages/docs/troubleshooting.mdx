@@ -1,0 +1,103 @@
+# Troubleshooting
+
+Common issues and how to fix them.
+
+## `caddy` not found
+
+**Symptom:** hostly reports that Caddy is unreachable, or starting Caddy fails.
+
+**Fix:** hostly requires [Caddy](https://caddyserver.com) installed and on your `PATH`.
+
+```bash
+caddy version
+```
+
+If that fails, install Caddy (e.g. `brew install caddy`, or your distro's package manager) and reopen your shell so `PATH` is updated.
+
+## Caddy admin API unreachable
+
+**Symptom:** the **Proxy & Caddy** screen shows the admin API at `http://localhost:2019` as **unreachable**, and domains don't route.
+
+**Fix:**
+1. Make sure Caddy is running — start it from the Proxy screen, or run `caddy start`
+2. Confirm nothing else is bound to port `2019`
+3. Re-run **Sync routes from registry** from the Proxy screen
+
+## Domain not resolving
+
+**Symptom:** the browser shows "This site can't be reached".
+
+**Fix:**
+1. On the **Domains** screen, check the domain shows **✓ synced** (not **⚠ drift**). Press <kbd>r</kbd> to refresh.
+2. If it shows drift, run **Sync routes from registry** from the **Proxy & Caddy** screen
+3. Confirm the entry exists in `/etc/hosts` between `# Hostly Start` and `# Hostly End`
+4. Make sure your dev server is actually listening on the target port
+
+## HTTPS certificate warnings
+
+**Symptom:** "Your connection is not private" on an `https` domain.
+
+**Fix:**
+1. Open the **Certificate** screen and select **Trust local CA (install root certificate)**
+2. Restart your browser — some browsers cache trust state until relaunch
+3. On **Linux**, Firefox and Chrome use their own NSS certificate stores. `caddy trust` covers the system store; you may need to import Caddy's root CA into the browser manually.
+
+## Routes disappear after a restart
+
+**Symptom:** domains work, then stop routing after a reboot or after Caddy restarts.
+
+**Why:** Caddy's admin-API config is not persisted across restarts. `/etc/hosts` survives, but the proxy routes don't.
+
+**Fix:**
+- Run `hostly sync` to re-apply them, **or**
+- Install the boot daemon from the **Daemon** screen so it runs `hostly sync` automatically at startup
+
+## Permission / sudo prompts
+
+**Symptom:** hostly asks for your password, or writing a domain fails with a permission error.
+
+**Why:** editing `/etc/hosts` requires elevation. hostly caches credentials with `sudo -v` at launch and falls back to `sudo cp` only when a direct write is denied.
+
+**Fix:** enter your password when prompted. If `sudo` is unavailable in your environment, run hostly where you can elevate, or edit the managed hosts block with appropriate privileges.
+
+## Port 80 / 443 already in use
+
+**Symptom:** Caddy fails to start.
+
+**Fix:** something else owns the HTTP/HTTPS ports. Find and stop it:
+
+```bash
+sudo lsof -i :80
+sudo lsof -i :443
+```
+
+Common culprits are Apache, Nginx, or another local proxy.
+
+## Daemon not loading
+
+### macOS
+
+```bash
+# Is the agent loaded?
+launchctl list | grep dev.hostly.sync
+
+# Reload it
+launchctl unload ~/Library/LaunchAgents/dev.hostly.sync.plist
+launchctl load ~/Library/LaunchAgents/dev.hostly.sync.plist
+```
+
+### Linux
+
+```bash
+# Status and logs
+systemctl --user status hostly-sync.service
+journalctl --user -u hostly-sync.service
+
+# Reload
+systemctl --user daemon-reload
+systemctl --user enable --now hostly-sync.service
+```
+
+## Still stuck?
+
+Open an issue on [GitHub](https://github.com/bilalbentoumi/hostly).
