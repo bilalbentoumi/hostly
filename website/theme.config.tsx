@@ -1,5 +1,10 @@
 import { DocsThemeConfig } from 'nextra-theme-docs';
 
+// Prefix for static assets so they resolve under the GitHub Pages project
+// subpath (e.g. /hostly). Next does not rewrite raw <img>/<link> URLs the way
+// it does for next/link, so these must be prefixed manually. Empty locally.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const config: DocsThemeConfig = {
   logo: (
     <span
@@ -9,7 +14,7 @@ const config: DocsThemeConfig = {
         gap: '8px',
         fontWeight: 700,
       }}>
-      <img src="/icon.svg" width={24} height={24} />
+      <img src={`${basePath}/icon.svg`} width={24} height={24} />
       hostly
     </span>
   ),
@@ -28,7 +33,7 @@ const config: DocsThemeConfig = {
         name="description"
         content="hostly documentation - an interactive CLI for local domains with trusted HTTPS via Caddy, a reverse proxy, and a boot daemon."
       />
-      <link rel="icon" href="/icon.svg" />
+      <link rel="icon" href={`${basePath}/icon.svg`} />
     </>
   ),
   useNextSeoProps() {
