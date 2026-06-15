@@ -1,45 +1,20 @@
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { FaGithub } from 'react-icons/fa';
 import { IoMoonSharp, IoSunnySharp } from 'react-icons/io5';
 import { RiNpmjsFill } from 'react-icons/ri';
 
-import { GITHUB_URL, NPM_URL, STORAGE_KEY } from '../lib/constants';
-
-function getSystemTheme(): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
-}
+import { GITHUB_URL, NPM_URL } from '../lib/constants';
 
 export function Header() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const initial =
-      stored === 'light' || stored === 'dark' ? stored : getSystemTheme();
-    setTheme(initial);
-    document.documentElement.setAttribute('data-theme', initial);
+  useEffect(() => setMounted(true), []);
 
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        const t = e.matches ? 'dark' : 'light';
-        setTheme(t);
-        document.documentElement.setAttribute('data-theme', t);
-      }
-    };
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
+  const isDark = mounted && resolvedTheme === 'dark';
 
-  const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-    localStorage.setItem(STORAGE_KEY, next);
-    document.documentElement.setAttribute('data-theme', next);
-  };
+  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
 
   return (
     <nav className="fixed inset-x-0 top-0 z-[100] border-b border-line bg-[rgba(255,255,255,0.85)] backdrop-blur-[20px] dark:bg-[rgba(0,0,0,0.6)]">
@@ -94,11 +69,7 @@ export function Header() {
             className="flex h-9 w-9 items-center justify-center rounded border border-line bg-transparent !text-secondary transition-colors hover:bg-tertiary hover:text-primary"
             onClick={toggleTheme}
             aria-label="Toggle theme">
-            {theme === 'dark' ? (
-              <IoMoonSharp size={20} />
-            ) : (
-              <IoSunnySharp size={20} />
-            )}
+            {isDark ? <IoMoonSharp size={20} /> : <IoSunnySharp size={20} />}
           </button>
         </div>
       </div>

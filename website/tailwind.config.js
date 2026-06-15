@@ -3,7 +3,7 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
-  darkMode: ['selector', '[data-theme="dark"] &'],
+  darkMode: 'class',
   content: ['./pages/index.tsx', './components/**/*.{ts,tsx}'],
   theme: {
     extend: {

@@ -31,7 +31,7 @@
     --input-bg: #f5f6f8;
   }
 
-  [data-theme='dark'] {
+  html.dark {
     --bg-primary: #111318;
     --bg-secondary: #181a20;
     --bg-tertiary: #23262e;
