@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'hostly-landing-theme';
-const GITHUB_URL = 'https://github.com/bilalbentoumi/hostly';
-const NPM_URL = 'https://www.npmjs.com/package/hostly';
+import { GITHUB_URL, NPM_URL, STORAGE_KEY } from '../lib/constants';
 
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';

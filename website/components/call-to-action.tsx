@@ -1,4 +1,4 @@
-const GITHUB_URL = 'https://github.com/bilalbentoumi/hostly';
+import { GITHUB_URL } from '../lib/constants';
 
 export function CallToAction() {
   return (

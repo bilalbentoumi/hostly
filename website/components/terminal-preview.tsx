@@ -38,12 +38,18 @@ function Cursor() {
   );
 }
 
-function Prompt({ command }: { command: string }) {
+function Prompt({
+  command,
+  cursor = true,
+}: {
+  command: string;
+  cursor?: boolean;
+}) {
   return (
     <div className="whitespace-pre-wrap break-words">
       <span className={c.prompt}>$</span>{' '}
       <span className={c.cmd}>{command}</span>
-      <Cursor />
+      {cursor && <Cursor />}
     </div>
   );
 }
@@ -254,7 +260,7 @@ export function TerminalPreview() {
       <div
         className="min-h-[420px] animate-term-fade px-[22px] py-5 text-[13.5px] leading-[1.55] text-[#c9d1d9] max-md:min-h-[380px] max-md:p-4 max-md:text-xs"
         key={scene.id}>
-        <Prompt command={scene.command} />
+        <Prompt command={scene.command} cursor={[0, 1, 3, 4].includes(index)} />
         <div className="mt-[14px] flex flex-col gap-[10px]">{scene.body}</div>
       </div>
 

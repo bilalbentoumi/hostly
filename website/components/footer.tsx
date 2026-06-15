@@ -1,5 +1,4 @@
-const GITHUB_URL = 'https://github.com/bilalbentoumi/hostly';
-const NPM_URL = 'https://www.npmjs.com/package/hostly';
+import { GITHUB_URL, NPM_URL } from '../lib/constants';
 
 export function Footer() {
   return (

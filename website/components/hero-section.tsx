@@ -1,6 +1,5 @@
 import { InstallCommand } from '../components/install-command';
-
-const GITHUB_URL = 'https://github.com/bilalbentoumi/hostly';
+import { GITHUB_URL } from '../lib/constants';
 
 type Tag = {
   label: string;
