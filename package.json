@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "git+https://github.com/bilalbentoumi/hostly.git"
 	},
-	"homepage": "https://github.com/bilalbentoumi/hostly#readme",
+	"homepage": "https://gethostly.sh",
 	"bugs": "https://github.com/bilalbentoumi/hostly/issues",
 	"bin": "dist/cli.js",
 	"type": "module",
