@@ -5,7 +5,7 @@ export function FeaturesHero() {
     <section className="mx-auto max-w-wide px-6 pb-20 pt-10">
       <div className="section-label">Core Features</div>
       <h2 className="section-title mb-10">Everything you need</h2>
-      <div className="mx-auto grid max-w-wide grid-cols-2 gap-5 px-6 max-md:grid-cols-1 max-md:gap-4 max-md:px-5 max-[480px]:px-4">
+      <div className="mx-auto grid max-w-wide grid-cols-2 gap-5 max-md:grid-cols-1 max-md:gap-4">
         <FeatureHeroCard
           variant="tui"
           title="Interactive Terminal UI"
