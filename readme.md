@@ -2,6 +2,8 @@
 
 > Interactive terminal app for managing local development domains on macOS and Linux.
 
+![hostly terminal UI](screenshots/terminal.png)
+
 `hostly` lets you map friendly hostnames like `myapp.local` to local ports and
 serve them over trusted HTTPS — without hand-editing `/etc/hosts` or writing
 Caddy config. It wires together two things for each domain you register:
