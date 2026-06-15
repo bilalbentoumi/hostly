@@ -2,6 +2,12 @@
 	"name": "hostly",
 	"version": "0.0.0",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bilalbentoumi/hostly.git"
+	},
+	"homepage": "https://github.com/bilalbentoumi/hostly#readme",
+	"bugs": "https://github.com/bilalbentoumi/hostly/issues",
 	"bin": "dist/cli.js",
 	"type": "module",
 	"packageManager": "pnpm@11.5.3",
