@@ -4,7 +4,7 @@ import { FaGithub } from 'react-icons/fa';
 import { IoMoonSharp, IoSunnySharp } from 'react-icons/io5';
 import { RiNpmjsFill } from 'react-icons/ri';
 
-import { GITHUB_URL, NPM_URL } from '../lib/constants';
+import { GITHUB_URL, NPM_URL } from '../libs/constants';
 
 export function Header() {
   const { resolvedTheme, setTheme } = useTheme();

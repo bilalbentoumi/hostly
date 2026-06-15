@@ -1,7 +1,7 @@
 import { FaGithub } from 'react-icons/fa';
 
 import { InstallCommand } from '../components/install-command';
-import { GITHUB_URL } from '../lib/constants';
+import { GITHUB_URL } from '../libs/constants';
 
 type Tag = {
   label: string;

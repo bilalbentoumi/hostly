@@ -1,6 +1,6 @@
 import { FaGithub } from 'react-icons/fa';
 
-import { GITHUB_URL } from '../lib/constants';
+import { GITHUB_URL } from '../libs/constants';
 
 export function CallToAction() {
   return (

@@ -1,4 +1,4 @@
-import { GITHUB_URL, NPM_URL } from '../lib/constants';
+import { GITHUB_URL, NPM_URL } from '../libs/constants';
 
 export function Footer() {
   return (
