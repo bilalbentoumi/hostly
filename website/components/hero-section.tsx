@@ -148,7 +148,7 @@ export function HeroSection() {
         ))}
       </div>
 
-      <h1 className="relative z-[1] mb-5 animate-fade-up text-[clamp(36px,6vw,56px)] font-extrabold leading-[1.1] tracking-[-1.5px] [animation-delay:100ms] max-md:text-[32px]">
+      <h1 className="relative z-[1] mb-5 animate-fade-up font-mono text-[clamp(32px,5.5vw,52px)] font-bold leading-[1.1] tracking-[-1px] [animation-delay:100ms] max-md:text-[30px]">
         Local domains,
         <br />
         from your terminal.

@@ -15,7 +15,9 @@ export function FeatureCard({
       <div className="mb-4 flex h-10 w-10 items-center justify-center rounded bg-tertiary text-primary">
         <Icon size={20} />
       </div>
-      <h3 className="mb-2 text-base font-bold tracking-[-0.2px]">{title}</h3>
+      <h3 className="mb-2 font-mono text-[15px] font-bold tracking-[-0.2px]">
+        {title}
+      </h3>
       <p className="text-sm leading-[1.6] text-secondary">{desc}</p>
     </div>
   );

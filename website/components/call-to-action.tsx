@@ -8,7 +8,7 @@ export function CallToAction() {
       className="mx-auto max-w-narrow px-6 py-20 text-center"
       id="support">
       <div className="rounded-xl border border-line bg-elevated px-10 py-12 shadow-lg max-md:px-6 max-md:py-9">
-        <h2 className="mb-3 text-[28px] font-extrabold tracking-[-0.8px]">
+        <h2 className="mb-3 font-mono text-[26px] font-bold tracking-[-0.5px]">
           Open source, forever free.
         </h2>
         <p className="mb-7 text-[15px] leading-[1.6] text-secondary">

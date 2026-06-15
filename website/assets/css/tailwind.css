@@ -11,12 +11,12 @@
     --text-primary: #1a1d21;
     --text-secondary: #6b7280;
     --text-tertiary: #9ca3af;
-    --accent: #36b845;
-    --accent-hover: #2ea33c;
+    --accent: #00b2bd;
+    --accent-hover: #009aa3;
     --accent-text: #ffffff;
-    --accent-light: rgba(54, 184, 69, 0.08);
-    --border: #e8eaed;
-    --border-subtle: #f0f1f3;
+    --accent-light: rgba(0, 178, 189, 0.08);
+    --border: #e2e4e8;
+    --border-subtle: #eceef1;
     --radius: 10px;
     --radius-lg: 14px;
     --radius-xl: 18px;
@@ -39,10 +39,10 @@
     --text-primary: #f1f3f5;
     --text-secondary: #9ca3af;
     --text-tertiary: #6b7280;
-    --accent: #42c94f;
-    --accent-hover: #36b845;
+    --accent: #00b2bd;
+    --accent-hover: #22c9d3;
     --accent-text: #ffffff;
-    --accent-light: rgba(66, 201, 79, 0.1);
+    --accent-light: rgba(0, 178, 189, 0.14);
     --border: #2a2d35;
     --border-subtle: #23262e;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -58,7 +58,7 @@
 
   .landing-page {
     font-family:
-      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui,
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui,
       sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
@@ -108,11 +108,15 @@
   }
 
   .section-label {
-    @apply mb-3 text-center text-[11px] font-semibold uppercase tracking-[1.5px] text-tertiary;
+    @apply mb-3 text-center font-mono text-[11px] font-semibold uppercase tracking-[2px] text-accent;
+  }
+
+  .section-label::before {
+    content: "// ";
   }
 
   .section-title {
-    @apply mb-3 text-center text-[clamp(28px,4vw,38px)] font-extrabold tracking-[-1px];
+    @apply mb-3 text-center font-mono text-[clamp(26px,4vw,36px)] font-bold tracking-[-0.5px];
   }
 
   .section-desc {

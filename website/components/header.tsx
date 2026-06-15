@@ -29,21 +29,21 @@ export function Header() {
           <li>
             <a
               href="#features"
-              className="text-sm font-medium text-secondary transition-colors hover:text-primary">
+              className="text-sm font-medium text-secondary hover:text-primary transition-colors">
               Features
             </a>
           </li>
           <li>
             <a
               href="#how-it-works"
-              className="text-sm font-medium text-secondary transition-colors hover:text-primary">
+              className="text-sm font-medium text-secondary hover:text-primary transition-colors">
               How It Works
             </a>
           </li>
           <li>
             <a
               href="/docs"
-              className="text-sm font-medium text-secondary transition-colors hover:text-primary">
+              className="text-sm font-medium text-secondary hover:text-primary transition-colors">
               Docs
             </a>
           </li>
@@ -53,7 +53,7 @@ export function Header() {
             href={NPM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-9 w-9 items-center justify-center rounded border border-line !text-secondary transition-colors hover:bg-tertiary hover:text-primary"
+            className="flex h-9 w-9 items-center justify-center rounded border border-line text-secondary hover:bg-tertiary hover:text-primary transition-colors"
             aria-label="npm package">
             <RiNpmjsFill size={20} />
           </a>
@@ -61,12 +61,12 @@ export function Header() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-9 w-9 items-center justify-center rounded border border-line !text-secondary transition-colors hover:bg-tertiary hover:text-primary"
+            className="flex h-9 w-9 items-center justify-center rounded border border-line text-secondary hover:bg-tertiary hover:text-primary transition-colors"
             aria-label="GitHub repository">
             <FaGithub size={20} />
           </a>
           <button
-            className="flex h-9 w-9 items-center justify-center rounded border border-line bg-transparent !text-secondary transition-colors hover:bg-tertiary hover:text-primary"
+            className="flex h-9 w-9 items-center justify-center rounded border border-line bg-transparent text-secondary hover:bg-tertiary hover:text-primary transition-colors"
             onClick={toggleTheme}
             aria-label="Toggle theme">
             {isDark ? <IoMoonSharp size={20} /> : <IoSunnySharp size={20} />}

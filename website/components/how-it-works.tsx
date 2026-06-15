@@ -12,11 +12,11 @@ export function HowItWorks() {
       <p className="section-desc">One command to install, one to run.</p>
       <div className="flex flex-col divide-y divide-line">
         <div className="flex gap-6 py-7 max-md:gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-[15px] font-bold text-on-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-accent font-mono text-[15px] font-bold text-on-accent">
             1
           </div>
           <div>
-            <h3 className="mb-1.5 text-[17px] font-bold tracking-[-0.2px]">
+            <h3 className="mb-1.5 font-mono text-[16px] font-bold tracking-[-0.2px]">
               Install hostly &amp; Caddy
             </h3>
             <p className="text-sm leading-[1.6] text-secondary">
@@ -39,11 +39,11 @@ export function HowItWorks() {
           </div>
         </div>
         <div className="flex gap-6 py-7 max-md:gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-[15px] font-bold text-on-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-accent font-mono text-[15px] font-bold text-on-accent">
             2
           </div>
           <div>
-            <h3 className="mb-1.5 text-[17px] font-bold tracking-[-0.2px]">
+            <h3 className="mb-1.5 font-mono text-[16px] font-bold tracking-[-0.2px]">
               Run hostly &amp; add a domain
             </h3>
             <p className="text-sm leading-[1.6] text-secondary">
@@ -63,11 +63,11 @@ export function HowItWorks() {
           </div>
         </div>
         <div className="flex gap-6 py-7 max-md:gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-[15px] font-bold text-on-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-accent font-mono text-[15px] font-bold text-on-accent">
             3
           </div>
           <div>
-            <h3 className="mb-1.5 text-[17px] font-bold tracking-[-0.2px]">
+            <h3 className="mb-1.5 font-mono text-[16px] font-bold tracking-[-0.2px]">
               Open in your browser
             </h3>
             <p className="text-sm leading-[1.6] text-secondary">

@@ -75,7 +75,7 @@ export function FeatureHeroCard({
       <div className="mb-4 flex h-11 w-11 items-center justify-center rounded bg-tertiary text-primary transition-[background] duration-300 ease-in-out group-hover:bg-accent-light">
         <Icon size={24} />
       </div>
-      <h3 className="mb-2 text-[17px] font-bold tracking-[-0.3px] text-primary">
+      <h3 className="mb-2 font-mono text-[16px] font-bold tracking-[-0.3px] text-primary">
         {title}
       </h3>
       <p className="text-sm leading-[1.6] text-secondary">{description}</p>
