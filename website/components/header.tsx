@@ -5,6 +5,7 @@ import { IoMoonSharp, IoSunnySharp } from 'react-icons/io5';
 import { RiNpmjsFill } from 'react-icons/ri';
 
 import { GITHUB_URL, NPM_URL } from '../libs/constants';
+import { LogoText } from './logo-text';
 
 export function Header() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -23,7 +24,7 @@ export function Header() {
           href="/"
           className="flex items-center gap-2 text-base font-bold tracking-[-0.3px] text-primary">
           <img src="/icon.svg" width={24} height={24} />
-          hostly
+          <LogoText className="mt-1" height={16}/>
         </a>
         <ul className="hidden items-center gap-8 md:flex">
           <li>
