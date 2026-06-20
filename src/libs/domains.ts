@@ -5,11 +5,20 @@ import type {
   SyncResult,
 } from '../types/index.js';
 import * as caddy from './caddy.js';
+import * as dnsmasq from './dnsmasq.js';
 import * as hosts from './hosts.js';
 import * as config from './registry.js';
 
 const HOST_PATTERN =
-  /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
+  /^(\*\.)?[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
+
+export function isWildcard(host: string): boolean {
+  return host.startsWith('*.');
+}
+
+export function wildcardBase(host: string): string {
+  return host.slice(2);
+}
 
 export function validate(
   host: string,
@@ -17,7 +26,7 @@ export function validate(
   existing: Domain[],
 ): string | undefined {
   if (!HOST_PATTERN.test(host)) {
-    return 'Host must be a dotted name like myapp.local';
+    return 'Host must be a dotted name like myapp.local or *.myapp.local';
   }
 
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -110,20 +119,35 @@ export async function applyToCaddy(): Promise<void> {
 export async function list(): Promise<DomainStatus[]> {
   const { domains } = config.loadRegistry();
   const managed = new Set(hosts.readManagedHosts());
+  const dnsBases = new Set(dnsmasq.managedBases());
   const routes = await caddy.listRoutes();
   const routed = new Set(
     routes.flatMap((r) => r.match?.flatMap((m) => m.host ?? []) ?? []),
   );
 
   return domains.map((domain) => {
-    const inHosts = managed.has(domain.host);
+    const inHosts = isWildcard(domain.host)
+      ? dnsBases.has(wildcardBase(domain.host))
+      : managed.has(domain.host);
     const inCaddy = routed.has(domain.host);
     return { ...domain, inHosts, inCaddy, synced: inHosts && inCaddy };
   });
 }
 
 async function reconcile(domains: Domain[]): Promise<SyncResult> {
-  const { elevated } = await hosts.write(domains);
+  const { elevated: hostsElevated } = await hosts.write(domains);
+
+  const bases = domains
+    .filter((d) => isWildcard(d.host))
+    .map((d) => wildcardBase(d.host));
+  let dnsError: string | undefined;
+  let dnsElevated = false;
+  try {
+    ({ elevated: dnsElevated } = await dnsmasq.sync(bases));
+  } catch (error) {
+    dnsError = (error as Error).message;
+  }
+
   let caddyError: string | undefined;
   try {
     await caddy.apply(domains);
@@ -131,5 +155,5 @@ async function reconcile(domains: Domain[]): Promise<SyncResult> {
     caddyError = (error as Error).message;
   }
 
-  return { elevated, caddyError };
+  return { elevated: hostsElevated || dnsElevated, caddyError, dnsError };
 }

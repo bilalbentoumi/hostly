@@ -20,11 +20,15 @@ import type {
 function syncNote(result: SyncResult, action: string): string {
   const parts = [action];
   if (result.elevated) {
-    parts.push('(updated /etc/hosts via sudo)');
+    parts.push('(applied via sudo)');
   }
 
   if (result.caddyError) {
     parts.push(`— Caddy not updated: ${result.caddyError}`);
+  }
+
+  if (result.dnsError) {
+    parts.push(`— wildcard DNS not updated: ${result.dnsError}`);
   }
 
   return parts.join(' ');

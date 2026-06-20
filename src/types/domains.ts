@@ -9,4 +9,5 @@ export type DomainStatus = Domain & {
 export type SyncResult = {
   elevated: boolean;
   caddyError?: string;
+  dnsError?: string;
 };

@@ -55,13 +55,14 @@ function buildContent(current: string, domains: Domain[]): string {
     base += '\n';
   }
 
-  if (domains.length === 0) {
+  const concrete = domains.filter((d) => !d.host.startsWith('*.'));
+  if (concrete.length === 0) {
     return base;
   }
 
   const block = [
     START,
-    ...domains.map((d) => `${LOOPBACK}\t${d.host}`),
+    ...concrete.map((d) => `${LOOPBACK}\t${d.host}`),
     END,
     '',
   ].join('\n');

@@ -77,7 +77,7 @@ export function SaveDomainForm({
         <TextInput
           value={host}
           focus={field === 'host'}
-          placeholder="myapp.local"
+          placeholder="myapp.local or *.myapp.test"
           onChange={setHost}
           onSubmit={submitHost}
         />
